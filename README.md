@@ -1,6 +1,6 @@
 # Blockchain-Healthcare-Project
 
-This project was taken on for an independant study course through the University of Kentuckt.
+This project was taken on for an independant study course through the University of Kentucky.
 
 # Goal: 
 

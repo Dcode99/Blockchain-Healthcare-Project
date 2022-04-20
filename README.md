@@ -11,4 +11,4 @@ Design choices:
 Hyperledger Fabric can be used to setup the blockchain, with chaincode for smart contracts supported in Go, Node.js, and Java. It has a shared ledger using a world state and transaction logs.
 	Etherium private network (https://merehead.com/blog/how-to-create-private-ethereum-blockchain/#:~:text=Ethereum%20private%20network%20is%20a,to%20people%20outside%20the%20organization.) is another option. Like Hyperledger fabric, it allows for smart contracts on a private network. The languages required for Etherium are Go, Python, and C++.
 
-Hyperledger is considered a more flexible technology, and is likely the choice for this project.
+Hyperledger Iroha is considered a more flexible technology, and was the choice for this project.

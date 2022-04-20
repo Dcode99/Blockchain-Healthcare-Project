@@ -17,3 +17,7 @@ Verified.Me is a Canadian blockchain-based digital identity network that uses Hy
 # Sources: 
 
 The initial commands and structure for this document used is from the Hyperledger Iroha Python repository (https://github.com/hyperledger/iroha-python).
+
+# Notes:
+
+Commands for setting up the blockchain are located in the "Notes on creating iroha node" document. These notes detail how to delete and set up a new blockchain if you have the prerequisites installed. The official guide is located in the Iroha documentation (https://iroha.readthedocs.io/en/main/getting_started/index.html).

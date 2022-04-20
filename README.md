@@ -1,5 +1,7 @@
 # Blockchain-Healthcare-Project
 
+This project was taken on for an independant study course through the University of Kentuckt.
+
 # Goal: 
 
 Demonstrating a method of secure communication using trusted private blockchain ledgers for hospitals and healthcare providers to digitally keep track of who should be able to access personal health information. 

@@ -1,6 +1,8 @@
 # Blockchain-Healthcare-Project
 
-Goal: Demonstrating a method of secure communication using trusted private blockchain ledgers for hospitals and healthcare providers to digitally keep track of who should be able to access personal health information. 
+Goal: 
+
+Demonstrating a method of secure communication using trusted private blockchain ledgers for hospitals and healthcare providers to digitally keep track of who should be able to access personal health information. 
 
 Existing projects: 
 
@@ -10,4 +12,6 @@ MyClinic.com (https://myclinic.com/) was created using Hyperledger, and uses the
 	
 Verified.Me is a Canadian blockchain-based digital identity network that uses Hyperledger fabric to allow consumers to choose who to share healthcare information with.
 
-Sources: The initial commands and structure for this document used is from the Hyperledger Iroha Python repository (https://github.com/hyperledger/iroha-python).
+Sources: 
+
+The initial commands and structure for this document used is from the Hyperledger Iroha Python repository (https://github.com/hyperledger/iroha-python).

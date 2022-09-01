@@ -37,7 +37,7 @@ To execute the python program and work on the blockchain after the network is se
 # Sources: 
 
 The initial commands and structure for this document used is from the Hyperledger Iroha Python repository (https://github.com/hyperledger/iroha-python).
-The network structure is based off of the work by Ta-SeenJunaid (https://github.com/Ta-SeenJunaid/Hyperledger_Iroha_Multi_Node_Tutorial).
+The network structure for multiple Iroha nodes is based off of the work by Ta-SeenJunaid (https://github.com/Ta-SeenJunaid/Hyperledger_Iroha_Multi_Node_Tutorial).
 
 # Notes:
 

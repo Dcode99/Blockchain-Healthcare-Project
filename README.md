@@ -14,6 +14,18 @@ MyClinic.com (https://myclinic.com/) was created using Hyperledger, and uses the
 	
 Verified.Me is a Canadian blockchain-based digital identity network that uses Hyperledger fabric to allow consumers to choose who to share healthcare information with.
 
+# Prerequisites
+
+To run this demonstration, a system running Unbuntu and docker is needed, along with an installation of Python3, pip3, and the iroha python library.
+
+# Network Requirements
+
+To set up the network, simply run the network shell script using "bash network.sh down" to clear the setup, and "bash network.sh up" to setup the network.
+
+# Python Exectuion
+
+To execute the python program and work on the blockchain after the network is setup, use the following command from the base directory for this project: "python3 python_programs/main.py"
+
 # Sources: 
 
 The initial commands and structure for this document used is from the Hyperledger Iroha Python repository (https://github.com/hyperledger/iroha-python).

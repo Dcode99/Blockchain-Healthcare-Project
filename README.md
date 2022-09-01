@@ -32,7 +32,7 @@ To set up the network, simply run the network shell script using "bash network.s
 
 # Python Exectuion
 
-To execute the python program and work on the blockchain after the network is setup, use the following command from the base directory for this project: "python3 python_programs/main.py". Once executed, the script will run a series of test commands with test output before giving the user a menu of further commands they can run using custom functions to execute on the blockchain.
+To execute the python program and work on the blockchain after the network is setup, use the following command from the base directory for this project: "python3 python_programs/main.py". Once executed, the script will run a series of test commands with test output before giving the user a menu of further commands they can run using custom functions to execute on the blockchain. The list of commands includes getting account details, creating a domain, creating an asset, creating an account, appending a role to an account, adding a record. The current iteration runs using the administrator keys.
 
 # Sources: 
 

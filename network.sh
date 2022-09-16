@@ -14,4 +14,9 @@ function down(){
     docker-compose -f Network-Files/docker-compose.yaml down --volumes --remove-orphans
 }
 
+function restart(){
+    down
+    up
+}
+
 "$@"

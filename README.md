@@ -28,7 +28,7 @@ To run this demonstration, a system running Unbuntu and docker is needed, along 
 
 # Network Requirements
 
-To set up the network, simply run the network shell script as root user using "bash network.sh down" to clear the setup, and "bash network.sh up" to setup the network.
+To set up the network, simply run the network shell script as root user using "bash network.sh down" to clear the setup, and "bash network.sh up" to setup the network. To restart the network, use the command "bash network.sh restart" as root.
 
 # Python Exectuion
 

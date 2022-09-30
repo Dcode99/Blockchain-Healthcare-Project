@@ -38,9 +38,6 @@ ADMIN_ACCOUNT_ID = os.getenv('ADMIN_ACCOUNT_ID', 'admin@test')
 ADMIN_PRIVATE_KEY = os.getenv(
     'ADMIN_PRIVATE_KEY', 'f101537e319568c765b2cc89698325604991dca57b9716b58016b253506cab70')
 print(ADMIN_ACCOUNT_ID)
-ADMIN2_ACCOUNT_ID = os.getenv('ADMIN2_ACCOUNT_ID', 'admin@healthcare')
-ADMIN2_PRIVATE_KEY = os.getenv(
-    'ADMIN2_PRIVATE_KEY', '6960e93c88e2b5b763bebbfc39aad49be942075f00f1458d60886ce808c68f57')
 
 # Here we will create user keys
 user_private_key = IrohaCrypto.private_key()
@@ -61,7 +58,6 @@ new_public_key = IrohaCrypto.derive_public_key(new_private_key)
 # f.write(admin_public_key)
 
 iroha = Iroha(ADMIN_ACCOUNT_ID)
-iroha2 = Iroha(ADMIN2_ACCOUNT_ID)
 
 # Defining the nets for each node
 net = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR, IROHA_PORT))
@@ -305,11 +301,11 @@ def create_role(defined_role, perms):
     Create role from given information
     """
     command = [
-        iroha2.command('CreateRole', role_name=defined_role, permissions=perms)
+        iroha.command('CreateRole', role_name=defined_role, permissions=perms)
     ]
     # And sign the transaction using the keys from earlier:
     tx = IrohaCrypto.sign_transaction(
-        iroha2.transaction(command), ADMIN_PRIVATE_KEY)
+        iroha.transaction(command), ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
 
 
@@ -364,7 +360,7 @@ def add_ehr(acc_id, ehr_reference):
     Add the EHR reference number as an account detail (setting account detail)
     """
     tx = iroha.transaction([
-        iroha2.command('SetAccountDetail', account_id=acc_id, key="ehr", value=ehr_reference)
+        iroha.command('SetAccountDetail', account_id=acc_id, key="ehr", value=ehr_reference)
     ])
 
 

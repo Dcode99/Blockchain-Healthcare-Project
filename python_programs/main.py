@@ -259,7 +259,7 @@ def create_specific_domain(domain):
     Create domain and asset with precision 2 from given information
     """
     command = [
-        iroha.command('CreateDomain', domain_id=domain, default_role='patient')
+        iroha.command('CreateDomain', domain_id=domain, default_role='user')
     ]
     print(command)
     # And sign the transaction using the keys from earlier:
@@ -289,7 +289,7 @@ def create_specific_domain_and_asset(domain, asset):
     Create domain and asset with precision 2 from given information
     """
     commands = [
-        iroha.command('CreateDomain', domain_id=domain, default_role='patient'),
+        iroha.command('CreateDomain', domain_id=domain, default_role='user'),
         iroha.command('CreateAsset', asset_name=asset,
                       domain_id=domain, precision=2)
     ]
@@ -404,7 +404,7 @@ patient_1_private_key, patient_1_public_key = create_account('bob', 'healthcare'
 # Adding an EHR to a patient's account
 # add_ehr('Bob@hospital', '308F3B37')
 
-print('done')
+print('done with preset commands')
 
 ################### MENU COMMANDS ########################
 print("---------- Login Page -----------")
@@ -412,11 +412,17 @@ username = input("Username: ")
 # Uses local public and private key files
 while username.lower() != "admin":
     print("Invalid user " + username)
+    username = input("Username: ")
+    input_domain = ""
+    input_asset = ""
+    input_role = ""
+    input_ehr_ref = ""
+    input_account = ""
 
 ################ EXECUTING COMMANDS ######################
 # Command list: get account details, create domain, create asset, create role, create account, append role, add ehr
 choice = "example"
-while choice != "q" && choice != "quit":
+while choice != "q" and choice != "quit":
     print('Choose a command, "q" or "quit" to quit:')
     print('1. Create Specific Domain')
     print('2. Create Specific Asset')
@@ -427,33 +433,33 @@ while choice != "q" && choice != "quit":
     # print('7. Create Role')
     choice = input()
     # Creating a new role is not allowed yet due to needing to define all permissions
-    if choice == 1:
-        domain = input('Create New Domain: ')
-        create_specific_domain(domain)
-    elif choice == 2:
-        asset = input('Create New Asset: ')
-        domain = input('Name of Domain: ')
-        create_specific_asset(domian, asset)
-    elif choice == 3:
-        role = input('Role to Append: ')
-        account = input('Account to add role to: ')
-        append_role(account, role)
-    elif choice == 4:
+    if choice == "1":
+        input_domain = input('Create New Domain: ')
+        create_specific_domain(input_domain)
+    elif choice == "2":
+        input_asset = input('Create New Asset: ')
+        input_domain = input('Name of Domain: ')
+        create_specific_asset(input_domain, input_asset)
+    elif choice == "3":
+        input_role = input('Role to Append: ')
+        input_account = input('Account to add role to: ')
+        append_role(input_account, input_role)
+    elif choice == "4":
         print('Add EHR')
-        account = input('Account Name: ')
-        ehr_ref = input('EHR Reference Number: ')
-        add_ehr(account, ehr_ref)
-    elif choice == 5:
+        input_account = input('Account Name: ')
+        input_ehr_ref = input('EHR Reference Number: ')
+        add_ehr(input_account, input_ehr_ref)
+    elif choice == "5":
         print('Create New Account')
-        account = input('New Account Name: ')
-        domain = input('Domain of New Account: ')
-        create_account(account, domain)
-    elif choice == 6:
+        input_account = input('New Account Name: ')
+        input_domain = input('Domain of New Account: ')
+        create_account(input_account, input_domain)
+    elif choice == "6":
         print('Get Account Details')
-        account = input('Account Name: ')
-        domain = input('Domain of Account: ')
-        get_account_details(account, domain)
-    # if choice == 7:
+        input_account = input('Account Name: ')
+        input_domain = input('Domain of Account: ')
+        get_account_details(input_account, input_domain)
+    # if choice == "7":
     #    role = input('Create New Role: ')
     #    permission_file = input("File with permissions: ")
     #    print('To be implemented...')

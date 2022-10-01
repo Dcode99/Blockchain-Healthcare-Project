@@ -2,11 +2,6 @@
 function up(){
 
     service docker start
-    docker stop $(docker ps -a -q)
-    docker rm $(docker ps -a -q)
-    docker network prune
-    docker volume prune
-    docker image prune
     docker network create iroha-network
     docker run --name some-postgres \
 	    -e POSTGRES_USER=postgres \
@@ -31,7 +26,11 @@ function up(){
 
 function down(){
 
-    docker-compose -f Network-Files/docker-compose.yaml down --volumes --remove-orphans
+    docker stop $(docker ps -a -q)
+    docker rm $(docker ps -a -q)
+    docker network prune
+    docker volume prune
+    docker image prune
 }
 
 function restart(){

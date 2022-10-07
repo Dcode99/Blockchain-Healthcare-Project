@@ -15,7 +15,7 @@ function up(){
     docker run --name iroha \
 	    -d \
 	    -p 50051:50051 \
-	    -v $(pwd)/iroha/example:/opt/iroha_data \
+	    -v $(pwd)/Network-Files/node1:/opt/iroha_data \
 	    -v blockstore:/tmp/block_store \
 	    --network=iroha-network \
 	    -e KEY='node1' \

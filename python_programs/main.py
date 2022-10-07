@@ -59,7 +59,7 @@ iroha = Iroha(ADMIN_ACCOUNT_ID)
 
 # Defining the nets for each node
 net = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR, IROHA_PORT))
-net_2 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_2, IROHA_PORT_2))
+# net_2 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_2, IROHA_PORT_2))
 
 def trace(func):
     """

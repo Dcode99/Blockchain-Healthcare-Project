@@ -9,24 +9,8 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"172.29.101.121:10001",
+                                "address":"128.163.181.53:10001",
                                 "peerKey":"bddd58404d1315e0eb27902c5d7c8eb0602c16238f005773df406bc191308929"
-                             }
-                          }
-                       },
-                       {
-                          "addPeer":{
-                             "peer":{
-                                "address":"172.29.101.122:10002",
-                                "peerKey":"3ad86d45d8b8e89298d49185b3418fc14a5b0ecbf3b26cb0a592c8ba6b8cae8e"
-                             }
-                           }
-                        },
-                       {
-                          "addPeer":{
-                             "peer":{
-                                "address":"172.29.101.123:10003",
-                                "peerKey":"6870dec85c32ba2d2c042c511b5a4ea4003823fd1ef819231becc7544331d5d3"
                              }
                           }
                        },

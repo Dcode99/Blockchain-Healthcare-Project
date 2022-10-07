@@ -27,12 +27,10 @@ if sys.version_info[0] < 3:
 # Here is the information about the environment and admin account information:
 
 # Iroha peers
-IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '172.29.101.121')
+IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '10.192.163.53')
 IROHA_PORT = os.getenv('IROHA_PORT', '50051')
-IROHA_HOST_ADDR_2 = os.getenv('IROHA_HOST_ADDR', '172.29.101.122')
-IROHA_PORT_2 = os.getenv('IROHA_PORT', '50052')
-IROHA_HOST_ADDR_3 = os.getenv('IROHA_HOST_ADDR', '172.29.101.123')
-IROHA_PORT_3 = os.getenv('IROHA_PORT', '50053')
+IROHA_HOST_ADDR_2 = os.getenv('IROHA_HOST_ADDR', '10.192.163.54')
+IROHA_PORT_2 = os.getenv('IROHA_PORT', '50051')
 
 ADMIN_ACCOUNT_ID = os.getenv('ADMIN_ACCOUNT_ID', 'admin@test')
 ADMIN_PRIVATE_KEY = os.getenv(
@@ -62,8 +60,6 @@ iroha = Iroha(ADMIN_ACCOUNT_ID)
 # Defining the nets for each node
 net = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR, IROHA_PORT))
 net_2 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_2, IROHA_PORT_2))
-net_3 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_3, IROHA_PORT_3))
-
 
 def trace(func):
     """

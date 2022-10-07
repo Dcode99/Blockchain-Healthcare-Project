@@ -27,20 +27,15 @@ if sys.version_info[0] < 3:
 # Here is the information about the environment and admin account information:
 
 # Iroha peers
-IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '172.29.101.121')
+IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '128.163.181.53')
 IROHA_PORT = os.getenv('IROHA_PORT', '50051')
-IROHA_HOST_ADDR_2 = os.getenv('IROHA_HOST_ADDR', '172.29.101.122')
-IROHA_PORT_2 = os.getenv('IROHA_PORT', '50052')
-IROHA_HOST_ADDR_3 = os.getenv('IROHA_HOST_ADDR', '172.29.101.123')
-IROHA_PORT_3 = os.getenv('IROHA_PORT', '50053')
+# IROHA_HOST_ADDR_2 = os.getenv('IROHA_HOST_ADDR', '128.163.181.54')
+# IROHA_PORT_2 = os.getenv('IROHA_PORT', '50051')
 
 ADMIN_ACCOUNT_ID = os.getenv('ADMIN_ACCOUNT_ID', 'admin@test')
 ADMIN_PRIVATE_KEY = os.getenv(
     'ADMIN_PRIVATE_KEY', 'f101537e319568c765b2cc89698325604991dca57b9716b58016b253506cab70')
 print(ADMIN_ACCOUNT_ID)
-ADMIN2_ACCOUNT_ID = os.getenv('ADMIN2_ACCOUNT_ID', 'admin@healthcare')
-ADMIN2_PRIVATE_KEY = os.getenv(
-    'ADMIN2_PRIVATE_KEY', '6960e93c88e2b5b763bebbfc39aad49be942075f00f1458d60886ce808c68f57')
 
 # Here we will create user keys
 user_private_key = IrohaCrypto.private_key()
@@ -61,13 +56,10 @@ new_public_key = IrohaCrypto.derive_public_key(new_private_key)
 # f.write(admin_public_key)
 
 iroha = Iroha(ADMIN_ACCOUNT_ID)
-iroha2 = Iroha(ADMIN2_ACCOUNT_ID)
 
 # Defining the nets for each node
 net = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR, IROHA_PORT))
-net_2 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_2, IROHA_PORT_2))
-net_3 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_3, IROHA_PORT_3))
-
+# net_2 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_2, IROHA_PORT_2))
 
 def trace(func):
     """
@@ -305,11 +297,11 @@ def create_role(defined_role, perms):
     Create role from given information
     """
     command = [
-        iroha2.command('CreateRole', role_name=defined_role, permissions=perms)
+        iroha.command('CreateRole', role_name=defined_role, permissions=perms)
     ]
     # And sign the transaction using the keys from earlier:
     tx = IrohaCrypto.sign_transaction(
-        iroha2.transaction(command), ADMIN_PRIVATE_KEY)
+        iroha.transaction(command), ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
 
 
@@ -329,7 +321,7 @@ def create_account(username, acc_domain):
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
-    print(tx)
+    # print(tx)
     return temp_private_key, temp_public_key
 
 
@@ -344,7 +336,7 @@ def create_account_alice():
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
-    print(tx)
+    # print(tx)
 
 
 @trace
@@ -358,16 +350,33 @@ def append_role(acc_id, role):
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
 
-
+    
+@trace
 def add_ehr(acc_id, ehr_reference):
     """
     Add the EHR reference number as an account detail (setting account detail)
     """
     tx = iroha.transaction([
-        iroha2.command('SetAccountDetail', account_id=acc_id, key="ehr", value=ehr_reference)
+        iroha.command('SetAccountDetail', account_id=acc_id, key="ehr", value=ehr_reference)
     ])
+    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
+    send_transaction_and_print_status(tx)
 
+    
+@trace
+def add_peer(peerIP, peerkey):
+    """
+    Add a peer to the network given an IP address
+    """
+    peer0 = primitive_pb2.Peer()
+    peer0.address = peerIP
+    peer0.peer_key = peerkey
+    tx = iroha.transaction([iroha.command('AddPeer', peer=peer0)])
+    # And sign the transaction using the keys from earlier:
+    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
+    send_transaction_and_print_status(tx)
 
+    
 # Let's run the commands defined previously:
 # create_domain_and_asset()
 # add_coin_to_admin()
@@ -418,6 +427,9 @@ while username.lower() != "admin":
     input_role = ""
     input_ehr_ref = ""
     input_account = ""
+    input_peer = ""
+    input_peer_IP = ""
+    input_peer_port = ""
 
 ################ EXECUTING COMMANDS ######################
 # Command list: get account details, create domain, create asset, create role, create account, append role, add ehr
@@ -430,7 +442,7 @@ while choice != "q" and choice != "quit":
     print('4. Add EHR')
     print('5. Create New Account')
     print('6. Get account details')
-    # print('7. Create Role')
+    print('7. Add Peer')
     choice = input()
     # Creating a new role is not allowed yet due to needing to define all permissions
     if choice == "1":
@@ -459,10 +471,13 @@ while choice != "q" and choice != "quit":
         input_account = input('Account Name: ')
         input_domain = input('Domain of Account: ')
         get_account_details(input_account, input_domain)
-    # if choice == "7":
-    #    role = input('Create New Role: ')
-    #    permission_file = input("File with permissions: ")
-    #    print('To be implemented...')
+    elif choice == "7":
+        role = input('Add New Peer: ')
+        input_peer_IP = input("Peer IP: ")
+        input_peer_port = input("Peer Port: ")
+        input_peerkey = input("Peer Public Key: ")
+        input_peer = input_peer_IP + ":" + input_peer_port
+        add_peer(input_peer, input_peerkey)
     elif choice == "q":
         print("Goodbye!")
     else:

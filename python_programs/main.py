@@ -428,6 +428,8 @@ while username.lower() != "admin":
     input_ehr_ref = ""
     input_account = ""
     input_peer = ""
+    input_peer_IP = ""
+    input_peer_port = ""
 
 ################ EXECUTING COMMANDS ######################
 # Command list: get account details, create domain, create asset, create role, create account, append role, add ehr
@@ -471,8 +473,10 @@ while choice != "q" and choice != "quit":
         get_account_details(input_account, input_domain)
     elif choice == "7":
         role = input('Add New Peer: ')
-        input_peer = input("Peer IP: ")
+        input_peer_IP = input("Peer IP: ")
+        input_peer_port = input("Peer Port: ")
         input_peerkey = input("Peer Public Key: ")
+        input_peer = input_peer_IP + ":" + input_peer_port
         add_peer(input_peer, input_peerkey)
     elif choice == "q":
         print("Goodbye!")

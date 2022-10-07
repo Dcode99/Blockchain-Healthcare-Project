@@ -27,9 +27,9 @@ if sys.version_info[0] < 3:
 # Here is the information about the environment and admin account information:
 
 # Iroha peers
-IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '10.192.163.53')
+IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '128.163.181.53')
 IROHA_PORT = os.getenv('IROHA_PORT', '50051')
-IROHA_HOST_ADDR_2 = os.getenv('IROHA_HOST_ADDR', '10.192.163.54')
+IROHA_HOST_ADDR_2 = os.getenv('IROHA_HOST_ADDR', '128.163.181.54')
 IROHA_PORT_2 = os.getenv('IROHA_PORT', '50051')
 
 ADMIN_ACCOUNT_ID = os.getenv('ADMIN_ACCOUNT_ID', 'admin@test')

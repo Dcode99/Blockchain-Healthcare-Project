@@ -4,6 +4,9 @@ networks:
   iroha-network:
     name: iroha-network
     attachable: true
+    ipam:
+      config:
+        - subnet: 12.163.181.0/24
 
 volumes:
   iroha-postgres-vol1:

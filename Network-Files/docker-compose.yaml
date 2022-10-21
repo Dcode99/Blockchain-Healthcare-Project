@@ -4,9 +4,6 @@ networks:
   iroha-network:
     name: iroha-network
     attachable: true
-    ipam:
-      config:
-        - subnet: 128.163.181.53/31
 
 volumes:
   iroha-postgres-vol1:
@@ -25,7 +22,6 @@ services:
       - POSTGRES_PASSWORD=mysecretpassword
     networks:
       iroha-network:
-        ipv4_address: 128.163.181.53
     volumes:
       - type: volume
         source: iroha-postgres-vol1
@@ -44,7 +40,6 @@ services:
       - /opt/iroha_data/entrypoint.sh
     networks:
       iroha-network:
-        ipv4_address: 128.163.181.53
     volumes:
       - ./node1:/opt/iroha_data
       - type: volume

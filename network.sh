@@ -11,6 +11,7 @@ function up(){
 	    -d postgres:9.5 \
 	    -c 'max_prepared_transactions=100'
     docker volume create blockstore
+    sleep 2s
     docker run --name iroha \
 	    -d \
 	    -p 50051:50051 \

@@ -11,7 +11,6 @@ function up(){
 	    -d postgres:9.5 \
 	    -c 'max_prepared_transactions=100'
     docker volume create blockstore
-    # git clone -b main https://github.com/hyperledger/iroha --depth=1
     docker run --name iroha \
 	    -d \
 	    -p 50051:50051 \

@@ -19,7 +19,7 @@ function up(){
 	    -v blockstore:/tmp/block_store \
 	    --network=iroha-network \
 	    -e KEY='node1' \
-	    --entrypoint="Network-Files/node1/entrypoint.sh" \
+	    --entrypoint="$(pwd)/Network-Files/node1/entrypoint.sh" \
 	    hyperledger/iroha:latest
 
 }

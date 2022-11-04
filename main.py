@@ -4,105 +4,87 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-
 # Here are Iroha dependencies.
 # Python library generally consists of 3 parts:
 # Iroha, IrohaCrypto and IrohaGrpc which we need to import:
-import os
-import binascii
-from iroha import IrohaCrypto
-from iroha import Iroha, IrohaGrpc
-from iroha import primitive_pb2
+"""
+This example is similar to tx-example.py but it consist transaction queries
+with optional params to return transactions in specific time range.
+"""
 
-# The following line is actually about the permissions
-# you might be using for the transaction.
-# You can find all the permissions here:
-# https://iroha.readthedocs.io/en/main/develop/api/permissions.html
-from iroha.primitive_pb2 import can_set_my_account_detail
+import os
 import sys
+import binascii
+from iroha import Iroha, IrohaGrpc, IrohaCrypto
+from google.protobuf.timestamp_pb2 import Timestamp
+from iroha.primitive_pb2 import can_set_my_account_detail
+from functools import wraps
+from grpc import RpcError, StatusCode
+import inspect  # inspect.stack(0)
+
+from utilities.errorCodes2Hr import get_proper_functions_for_commands
+
 
 if sys.version_info[0] < 3:
     raise Exception('Python 3 or a more recent version is required.')
 
+
 # Here is the information about the environment and admin account information:
-
-# Iroha peers
-IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '172.29.101.121')
+IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '127.0.0.1')
 IROHA_PORT = os.getenv('IROHA_PORT', '50051')
-IROHA_HOST_ADDR_2 = os.getenv('IROHA_HOST_ADDR', '172.29.101.122')
-IROHA_PORT_2 = os.getenv('IROHA_PORT', '50052')
-IROHA_HOST_ADDR_3 = os.getenv('IROHA_HOST_ADDR', '172.29.101.123')
-IROHA_PORT_3 = os.getenv('IROHA_PORT', '50053')
-
 ADMIN_ACCOUNT_ID = os.getenv('ADMIN_ACCOUNT_ID', 'admin@test')
 ADMIN_PRIVATE_KEY = os.getenv(
     'ADMIN_PRIVATE_KEY', 'f101537e319568c765b2cc89698325604991dca57b9716b58016b253506cab70')
-print(ADMIN_ACCOUNT_ID)
-ADMIN2_ACCOUNT_ID = os.getenv('ADMIN2_ACCOUNT_ID', 'admin@healthcare')
-ADMIN2_PRIVATE_KEY = os.getenv(
-    'ADMIN2_PRIVATE_KEY', '6960e93c88e2b5b763bebbfc39aad49be942075f00f1458d60886ce808c68f57')
 
 # Here we will create user keys
 user_private_key = IrohaCrypto.private_key()
 user_public_key = IrohaCrypto.derive_public_key(user_private_key)
-# Creating the user Keys for this account
-new_private_key = IrohaCrypto.private_key()
-new_public_key = IrohaCrypto.derive_public_key(new_private_key)
-
-# Creating admin keys for the domain
-# admin_private_key = IrohaCrypto.private_key()
-# admin_public_key = IrohaCrypto.derive_public_key(user_private_key)
-
-# writing admin key to a file
-# with open('admin@healthcare.priv', 'wb') as f:
-# f.write(admin_private_key)
-
-# with open('admin@healthcare.pub', 'wb') as f:
-# f.write(admin_public_key)
-
 iroha = Iroha(ADMIN_ACCOUNT_ID)
-iroha2 = Iroha(ADMIN2_ACCOUNT_ID)
-
-# Defining the nets for each node
-net = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR, IROHA_PORT))
-net_2 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_2, IROHA_PORT_2))
-net_3 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_3, IROHA_PORT_3))
+net = IrohaGrpc(f'{IROHA_HOST_ADDR}:{IROHA_PORT}')
 
 
 def trace(func):
     """
     A decorator for tracing methods' begin/end execution points
     """
-
+    @wraps(func)
     def tracer(*args, **kwargs):
         name = func.__name__
-        print('\tEntering "{}"'.format(name))
+        stack_size = int(len(inspect.stack(0)) / 2)  # @wraps(func) is also increasing the size
+        indent = stack_size*'\t'
+        print(f'{indent} > Entering "{name}": args: {args}')
         result = func(*args, **kwargs)
-        print('\tLeaving "{}"'.format(name))
+        print(f'{indent} < Leaving "{name}"')
         return result
 
     return tracer
 
 
-# Defining the commands:
 @trace
 def send_transaction_and_print_status(transaction):
     hex_hash = binascii.hexlify(IrohaCrypto.hash(transaction))
-    print('Transaction hash = {}, creator = {}'.format(
-        hex_hash, transaction.payload.reduced_payload.creator_account_id))
+    creator_id = transaction.payload.reduced_payload.creator_account_id
+    commands = get_commands_from_tx(transaction)
+    print(f'Transaction "{commands}",'
+          f' hash = {hex_hash}, creator = {creator_id}')
     net.send_tx(transaction)
-    for status in net.tx_status_stream(transaction):
-        print(status)
+    for i, status in enumerate(net.tx_status_stream(transaction)):
+        status_name, status_code, error_code = status
+        print(f"{i}: status_name={status_name}, status_code={status_code}, "
+              f"error_code={error_code}")
+        if status_name in ('STATEFUL_VALIDATION_FAILED', 'STATELESS_VALIDATION_FAILED', 'REJECTED'):
+            error_code_hr = get_proper_functions_for_commands(commands)(error_code)
+            raise RuntimeError(f"{status_name} failed on tx: "
+                               f"{transaction} due to reason {error_code}: "
+                               f"{error_code_hr}")
 
 
-@trace
-def send_2_transaction_and_print_status(transaction):
-    hex_hash = binascii.hexlify(IrohaCrypto.hash(transaction))
-    print('Transaction hash = {}, creator = {}'.format(
-        hex_hash, transaction.payload.reduced_payload.creator_account_id))
-    net.send_tx(transaction)
-    for status in net.tx_status_stream(transaction):
-        print(status)
+def get_commands_from_tx(transaction):
+    commands_from_tx = []
+    for command in transaction.payload.reduced_payload.__getattribute__("commands"):
+        listed_fields = command.ListFields()
+        commands_from_tx.append(listed_fields[0][0].name)
+    return commands_from_tx
 
 
 # For example, below we define a transaction made of 2 commands:
@@ -111,353 +93,194 @@ def send_2_transaction_and_print_status(transaction):
 # You can check out all of them here:
 # https://iroha.readthedocs.io/en/main/develop/api/commands.html
 @trace
-def create_domain_and_asset():
+def create_domain_and_asset(domain: str, asset_short_id: str, precision=2, default_role='user'):
     """
-    Create domain 'domain' and asset 'coin#domain' with precision 2
+    Creates domain and asset with specific precision provided by arguments
     """
     commands = [
-        iroha.command('CreateDomain', domain_id='domain', default_role='user'),
-        iroha.command('CreateAsset', asset_name='coin',
-                      domain_id='domain', precision=2)
+        iroha.command('CreateDomain', domain_id=domain, default_role=default_role),
+        iroha.command('CreateAsset', asset_name=asset_short_id,
+                      domain_id=domain, precision=precision)
     ]
-    # And sign the transaction using the keys from earlier:
+# And sign the transaction using the keys from earlier:
     tx = IrohaCrypto.sign_transaction(
         iroha.transaction(commands), ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
-
-
-# You can define queries
-# (https://iroha.readthedocs.io/en/main/develop/api/queries.html)
+# You can define queries 
+# (https://iroha.readthedocs.io/en/main/develop/api/queries.html) 
 # the same way.
 
 
 @trace
-def add_coin_to_admin():
+def add_coin_to_admin(asset: str, amount='1000.00'):
     """
-    Add 1000.00 units of 'coin#domain' to 'admin@test'
+    Add provided amount of specific units to admin account
     """
     tx = iroha.transaction([
         iroha.command('AddAssetQuantity',
-                      asset_id='coin#domain', amount='1000.00')
+                      asset_id=asset, amount=amount)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
+    tx_tms = tx.payload.reduced_payload.created_time
+    print(tx_tms)
+    first_time, last_time = tx_tms - 1, tx_tms + 1
+    return first_time, last_time
 
 
 @trace
-def create_account_userone():
+def create_account(account_id: str, domain: str):
     """
-    Create account 'userone@domain'
+    Create account
     """
     tx = iroha.transaction([
-        iroha.command('CreateAccount', account_name='userone', domain_id='domain',
+        iroha.command('CreateAccount', account_name=account_id, domain_id=domain,
                       public_key=user_public_key)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
-    print(tx)
 
 
 @trace
-def transfer_coin_from_admin_to_userone():
+def transfer_coin(source_account, destination_account, asset_id, amount='2.00'):
     """
-    Transfer 2.00 'coin#domain' from 'admin@test' to 'userone@domain'
+    Transfer assets between accounts
     """
     tx = iroha.transaction([
-        iroha.command('TransferAsset', src_account_id='admin@test', dest_account_id='userone@domain',
-                      asset_id='coin#domain', description='init top up', amount='2.00')
+        iroha.command('TransferAsset', src_account_id=source_account,
+                      dest_account_id=destination_account, asset_id=asset_id,
+                      description='init top up', amount=amount)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
 
 
 @trace
-def userone_grants_to_admin_set_account_detail_permission():
+def user_grants_to_admin_set_account_detail_permission(account_id: str):
     """
-    Make admin@test able to set detail to userone@domain
+    Make admin account able to set detail of account
     """
     tx = iroha.transaction([
-        iroha.command('GrantPermission', account_id='admin@test',
+        iroha.command('GrantPermission', account_id=ADMIN_ACCOUNT_ID,
                       permission=can_set_my_account_detail)
-    ], creator_account='userone@domain')
+    ], creator_account=account_id)
     IrohaCrypto.sign_transaction(tx, user_private_key)
     send_transaction_and_print_status(tx)
 
 
 @trace
-def set_age_to_userone():
+def set_age_to_user(account_id: str):
     """
-    Set age to userone@domain by admin@test
+    Set age to user by admin account
     """
     tx = iroha.transaction([
         iroha.command('SetAccountDetail',
-                      account_id='userone@domain', key='age', value='18')
+                      account_id=account_id, key='age', value='18')
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
 
 
 @trace
-def get_coin_info():
+def get_coin_info(asset: str):
     """
-    Get asset info for coin#domain
-    :return:
+    Get asset info for provided asset
     """
-    query = iroha.query('GetAssetInfo', asset_id='coin#domain')
+    query = iroha.query('GetAssetInfo', asset_id=asset)
     IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
 
     response = net.send_query(query)
     data = response.asset_response.asset
-    print('Asset id = {}, precision = {}'.format(data.asset_id, data.precision))
+    print(f'Asset id = {data.asset_id}, precision = {data.precision}')
 
 
 @trace
-def get_account_assets():
+def get_account_assets(account_id: str):
     """
-    List all the assets of userone@domain
+    List all the assets of provided user account
     """
-    query = iroha.query('GetAccountAssets', account_id='userone@domain')
+    query = iroha.query('GetAccountAssets', account_id=account_id)
     IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
 
     response = net.send_query(query)
     data = response.account_assets_response.account_assets
-    for ast in data:
-        print('Asset id = {}, balance = {}'.format(
-            ast.asset_id, ast.balance))
+    for asset in data:
+        print(f'Asset id = {asset.asset_id}, balance = {asset.balance}')
 
 
 @trace
-def get_userone_details():
+def query_transactions_simple():
+    query = iroha.query('GetAccountTransactions', account_id=ADMIN_ACCOUNT_ID, page_size=3)
+    IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
+    response = net.send_query(query)
+    data = response
+    print(data)
+
+
+@trace 
+def query_transactions(first_time=None, last_time=None,
+                       first_height=None, last_height=None):
+    query = iroha.query('GetAccountTransactions', account_id=ADMIN_ACCOUNT_ID,
+                        first_tx_time=first_time,
+                        last_tx_time=last_time,
+                        first_tx_height=first_height,
+                        last_tx_height=last_height,
+                        page_size=3)
+    IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
+    response = net.send_query(query)
+    data = response
+    print(data)
+
+
+@trace
+def get_user_details(account_id: str):
     """
     Get all the kv-storage entries for userone@domain
     """
-    query = iroha.query('GetAccountDetail', account_id='userone@domain')
+    query = iroha.query('GetAccountDetail', account_id=account_id)
     IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
 
     response = net.send_query(query)
     data = response.account_detail_response
-    print('Account id = {}, details = {}'.format('userone@domain', data.detail))
+    print(f'Account id = {account_id}, details = {data.detail}')
 
 
-### NEW COMMANDS ###
-@trace
-def get_account_details(acc_id, domain):
-    """
-    Get all the kv-storage entries for username@domain
-    """
-    query = iroha.query('GetAccountDetail', account_id='userone@domain')
-    IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
-
-    response = net.send_query(query)
-    data = response.account_detail_response
-    print('Account id = {}, details = {}'.format(acc_id, data.detail))
+def iroha_timestamp_to_protobuf_timestamp(timestamp_to_convert):
+    # set timestamp to correct value
+    # for more protobuf timestamp api info see:
+    # https://googleapis.dev/python/protobuf/latest/google/protobuf/timestamp_pb2.html
+    tx_time = Timestamp()
+    tx_time.FromMilliseconds(timestamp_to_convert)
+    return tx_time
 
 
-@trace
-def create_specific_domain(domain):
-    """
-    Create domain and asset with precision 2 from given information
-    """
-    command = [
-        iroha.command('CreateDomain', domain_id=domain, default_role='patient')
-    ]
-    print(command)
-    # And sign the transaction using the keys from earlier:
-    tx = IrohaCrypto.sign_transaction(
-        iroha.transaction(command), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
+if __name__ == '__main__':
+    try:
+        # Let's run the commands defined previously:
+        create_domain_and_asset(domain='domain', asset_short_id='coin')
+        first_time, last_time = add_coin_to_admin(asset='coin#domain')
+        create_account(account_id='userone', domain='domain')
+        transfer_coin('admin@test', 'userone@domain', 'coin#domain')
+        user_grants_to_admin_set_account_detail_permission(account_id='userone@domain')
+        set_age_to_user(account_id='userone@domain')
+        get_coin_info(asset='coin#domain')
+        get_account_assets(account_id='userone@domain')
+        get_user_details(account_id='userone@domain')
+        query_transactions_simple()
 
-
-@trace
-def create_specific_asset(domain, asset):
-    """
-    Create domain and asset with precision 2 from given information
-    """
-    command = [
-        iroha.command('CreateAsset', asset_name=asset,
-                      domain_id=domain, precision=2)
-    ]
-    # And sign the transaction using the keys from earlier:
-    tx = IrohaCrypto.sign_transaction(
-        iroha.transaction(command), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-@trace
-def create_specific_domain_and_asset(domain, asset):
-    """
-    Create domain and asset with precision 2 from given information
-    """
-    commands = [
-        iroha.command('CreateDomain', domain_id=domain, default_role='patient'),
-        iroha.command('CreateAsset', asset_name=asset,
-                      domain_id=domain, precision=2)
-    ]
-    # And sign the transaction using the keys from earlier:
-    tx = IrohaCrypto.sign_transaction(
-        iroha.transaction(commands), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-@trace
-def create_role(defined_role, perms):
-    """
-    Create role from given information
-    """
-    command = [
-        iroha2.command('CreateRole', role_name=defined_role, permissions=perms)
-    ]
-    # And sign the transaction using the keys from earlier:
-    tx = IrohaCrypto.sign_transaction(
-        iroha2.transaction(command), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-# This account is created with the new admin under the healthcare domain
-@trace
-def create_account(username, acc_domain):
-    """
-    Create an account in the form of 'username@domain'
-    """
-    # Creating the user Keys for this account
-    temp_private_key = IrohaCrypto.private_key()
-    temp_public_key = IrohaCrypto.derive_public_key(temp_private_key)
-
-    tx = iroha.transaction([
-        iroha.command('CreateAccount', account_name=username, domain_id=acc_domain,
-                       public_key=temp_public_key)
-    ])
-    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    print(tx)
-    return temp_private_key, temp_public_key
-
-
-@trace
-def create_account_alice():
-    """
-    Create account 'userone@domain'
-    """
-    tx = iroha.transaction([
-        iroha.command('CreateAccount', account_name='alice', domain_id='test',
-                      public_key=new_public_key)
-    ])
-    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    print(tx)
-
-
-@trace
-def append_role(acc_id, role):
-    """
-    Create an account in the form of 'username@domain'
-    """
-    tx = iroha.transaction([
-        iroha.command('AppendRole', account_id=acc_id, role_name=role)
-    ])
-    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-def add_ehr(acc_id, ehr_reference):
-    """
-    Add the EHR reference number as an account detail (setting account detail)
-    """
-    tx = iroha.transaction([
-        iroha2.command('SetAccountDetail', account_id=acc_id, key="ehr", value=ehr_reference)
-    ])
-
-
-# Let's run the commands defined previously:
-# create_domain_and_asset()
-# add_coin_to_admin()
-# create_account_userone()
-# transfer_coin_from_admin_to_userone()
-# userone_grants_to_admin_set_account_detail_permission()
-# set_age_to_userone()
-# get_coin_info()
-# get_account_assets()
-# get_userone_details()
-
-########### custom commands #############
-
-### First commands were before Genesis Block implementation ###
-# Create correct domain and asset
-domain_to_define = 'healthcare'
-asset_to_define = 'PatientRecords'
-# create_specific_domain(domain_to_define)
-# create_specific_asset(domain_to_define, asset_to_define)
-# creating admin account in hospital (now defined in genesis.block)
-# hospital_admin_1_private_key, hospital_admin_1_public_key = create_account('admin', 'healthcare')
-# append_role('admin@hospital', 'admin')
-
-# testing create account functions
-# create_account_alice()
-
-# creating doctor account in hospital
-doctor_1_private_key, doctor_1_public_key = create_account('alice', 'healthcare')
-append_role('alice@healthcare', 'provider')
-
-# creating patient account in hospital (no need to append role since user is default)
-patient_1_private_key, patient_1_public_key = create_account('bob', 'healthcare')
-
-# Adding an EHR to a patient's account
-# add_ehr('Bob@hospital', '308F3B37')
-
-print('done')
-
-################### MENU COMMANDS ########################
-print("---------- Login Page -----------")
-username = input("Username: ")
-# Uses local public and private key files
-while username.lower() != "admin":
-    print("Invalid user " + username)
-
-################ EXECUTING COMMANDS ######################
-# Command list: get account details, create domain, create asset, create role, create account, append role, add ehr
-choice = "example"
-while choice != "q" && choice != "quit":
-    print('Choose a command, "q" or "quit" to quit:')
-    print('1. Create Specific Domain')
-    print('2. Create Specific Asset')
-    print('3. Append Role to an account')
-    print('4. Add EHR')
-    print('5. Create New Account')
-    print('6. Get account details')
-    # print('7. Create Role')
-    choice = input()
-    # Creating a new role is not allowed yet due to needing to define all permissions
-    if choice == 1:
-        domain = input('Create New Domain: ')
-        create_specific_domain(domain)
-    elif choice == 2:
-        asset = input('Create New Asset: ')
-        domain = input('Name of Domain: ')
-        create_specific_asset(domian, asset)
-    elif choice == 3:
-        role = input('Role to Append: ')
-        account = input('Account to add role to: ')
-        append_role(account, role)
-    elif choice == 4:
-        print('Add EHR')
-        account = input('Account Name: ')
-        ehr_ref = input('EHR Reference Number: ')
-        add_ehr(account, ehr_ref)
-    elif choice == 5:
-        print('Create New Account')
-        account = input('New Account Name: ')
-        domain = input('Domain of New Account: ')
-        create_account(account, domain)
-    elif choice == 6:
-        print('Get Account Details')
-        account = input('Account Name: ')
-        domain = input('Domain of Account: ')
-        get_account_details(account, domain)
-    # if choice == 7:
-    #    role = input('Create New Role: ')
-    #    permission_file = input("File with permissions: ")
-    #    print('To be implemented...')
-    elif choice == "q":
-        print("Goodbye!")
-    else:
-        print('Invalid Option Selected')
+        # query for txs in measured time
+        print('transactions from time interval query: ')
+        query_transactions(iroha_timestamp_to_protobuf_timestamp(first_time),
+                           iroha_timestamp_to_protobuf_timestamp(last_time))
+        # query for txs in given height range
+        print('transactions from height range query: ')
+        query_transactions(first_height=2, last_height=3)
+        print('done')
+    except RpcError as rpc_error:
+        if rpc_error.code() == StatusCode.UNAVAILABLE:
+            print(f'[E] Iroha is not running in address:'
+                  f'{IROHA_HOST_ADDR}:{IROHA_PORT}!')
+        else:
+            print(e)
+    except RuntimeError as e:
+        print(e)

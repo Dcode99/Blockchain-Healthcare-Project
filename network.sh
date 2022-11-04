@@ -6,7 +6,7 @@ function up(){
     docker run --name some-postgres \
 	    -e POSTGRES_USER=postgres \
 	    -e POSTGRES_PASSWORD=mysecretpassword \
-	    -p 5432:5432 \
+	    --networking host \
 	    --network=iroha-network \
 	    -d postgres:9.5 \
 	    -c 'max_prepared_transactions=100'
@@ -14,7 +14,7 @@ function up(){
     sleep 10s
     docker run --name iroha \
 	    -d \
-	    -p 50051:50051 \
+	    --networking host \
 	    -v $(pwd)/Network-Files/node1:/opt/iroha_data \
 	    -v blockstore:/tmp/block_store \
 	    --network=iroha-network \

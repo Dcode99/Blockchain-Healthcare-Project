@@ -23,6 +23,8 @@
   {
     "address": "128.163.181.53:10001",
     "public_key": "bddd58404d1315e0eb27902c5d7c8eb0602c16238f005773df406bc191308929"
+  },
+  {
     "address": "128.163.181.54:10001",
     "public_key": "3ad86d45d8b8e89298d49185b3418fc14a5b0ecbf3b26cb0a592c8ba6b8cae8e"
   }

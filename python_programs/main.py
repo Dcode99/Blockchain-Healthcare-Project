@@ -472,9 +472,9 @@ while choice != "q" and choice != "quit":
         input_domain = input('Domain of Account: ')
         get_account_details(input_account, input_domain)
     elif choice == "7":
-        role = input('Add New Peer: ')
+        print('Add New Peer')
         input_peer_IP = input("Peer IP: ")
-        input_peer_port = input("Peer Port: ")
+        input_peer_port = 10001
         input_peerkey = input("Peer Public Key: ")
         input_peer = input_peer_IP + ":" + input_peer_port
         add_peer(input_peer, input_peerkey)

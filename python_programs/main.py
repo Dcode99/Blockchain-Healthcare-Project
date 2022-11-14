@@ -474,7 +474,7 @@ while choice != "q" and choice != "quit":
     elif choice == "7":
         print('Add New Peer')
         input_peer_IP = input("Peer IP: ")
-        input_peer_port = 10001
+        input_peer_port = "10001"
         input_peerkey = input("Peer Public Key: ")
         input_peer = input_peer_IP + ":" + input_peer_port
         add_peer(input_peer, input_peerkey)

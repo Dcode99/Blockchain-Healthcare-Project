@@ -59,6 +59,8 @@ iroha = Iroha(ADMIN_ACCOUNT_ID)
 
 # Defining the nets for each node
 net = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR, IROHA_PORT))
+
+
 # net_2 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_2, IROHA_PORT_2))
 
 def trace(func):
@@ -121,114 +123,6 @@ def create_domain_and_asset():
 # You can define queries
 # (https://iroha.readthedocs.io/en/main/develop/api/queries.html)
 # the same way.
-
-
-@trace
-def add_coin_to_admin():
-    """
-    Add 1000.00 units of 'coin#domain' to 'admin@test'
-    """
-    tx = iroha.transaction([
-        iroha.command('AddAssetQuantity',
-                      asset_id='coin#domain', amount='1000.00')
-    ])
-    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-@trace
-def create_account_userone():
-    """
-    Create account 'userone@domain'
-    """
-    tx = iroha.transaction([
-        iroha.command('CreateAccount', account_name='userone', domain_id='domain',
-                      public_key=user_public_key)
-    ])
-    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    print(tx)
-
-
-@trace
-def transfer_coin_from_admin_to_userone():
-    """
-    Transfer 2.00 'coin#domain' from 'admin@test' to 'userone@domain'
-    """
-    tx = iroha.transaction([
-        iroha.command('TransferAsset', src_account_id='admin@test', dest_account_id='userone@domain',
-                      asset_id='coin#domain', description='init top up', amount='2.00')
-    ])
-    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-@trace
-def userone_grants_to_admin_set_account_detail_permission():
-    """
-    Make admin@test able to set detail to userone@domain
-    """
-    tx = iroha.transaction([
-        iroha.command('GrantPermission', account_id='admin@test',
-                      permission=can_set_my_account_detail)
-    ], creator_account='userone@domain')
-    IrohaCrypto.sign_transaction(tx, user_private_key)
-    send_transaction_and_print_status(tx)
-
-
-@trace
-def set_age_to_userone():
-    """
-    Set age to userone@domain by admin@test
-    """
-    tx = iroha.transaction([
-        iroha.command('SetAccountDetail',
-                      account_id='userone@domain', key='age', value='18')
-    ])
-    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-@trace
-def get_coin_info():
-    """
-    Get asset info for coin#domain
-    :return:
-    """
-    query = iroha.query('GetAssetInfo', asset_id='coin#domain')
-    IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
-
-    response = net.send_query(query)
-    data = response.asset_response.asset
-    print('Asset id = {}, precision = {}'.format(data.asset_id, data.precision))
-
-
-@trace
-def get_account_assets():
-    """
-    List all the assets of userone@domain
-    """
-    query = iroha.query('GetAccountAssets', account_id='userone@domain')
-    IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
-
-    response = net.send_query(query)
-    data = response.account_assets_response.account_assets
-    for ast in data:
-        print('Asset id = {}, balance = {}'.format(
-            ast.asset_id, ast.balance))
-
-
-@trace
-def get_userone_details():
-    """
-    Get all the kv-storage entries for userone@domain
-    """
-    query = iroha.query('GetAccountDetail', account_id='userone@domain')
-    IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
-
-    response = net.send_query(query)
-    data = response.account_detail_response
-    print('Account id = {}, details = {}'.format('userone@domain', data.detail))
 
 
 ### NEW COMMANDS ###
@@ -317,7 +211,7 @@ def create_account(username, acc_domain):
 
     tx = iroha.transaction([
         iroha.command('CreateAccount', account_name=username, domain_id=acc_domain,
-                       public_key=temp_public_key)
+                      public_key=temp_public_key)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
@@ -350,19 +244,19 @@ def append_role(acc_id, role):
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
 
-    
+
 @trace
-def add_ehr(acc_id, ehr_reference):
+def add_ehr(acc_id, domain, detail, ehr_reference):
     """
     Add the EHR reference number as an account detail (setting account detail)
     """
     tx = iroha.transaction([
-        iroha.command('SetAccountDetail', account_id=acc_id, key="ehr", value=ehr_reference)
+        iroha.command('SetAccountDetail', account_id=acc_id + '@' + domain, key=detail, value=ehr_reference)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
 
-    
+
 @trace
 def add_peer(peerIP, peerkey):
     """
@@ -376,48 +270,29 @@ def add_peer(peerIP, peerkey):
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
 
-    
-# Let's run the commands defined previously:
-# create_domain_and_asset()
-# add_coin_to_admin()
-# create_account_userone()
-# transfer_coin_from_admin_to_userone()
-# userone_grants_to_admin_set_account_detail_permission()
-# set_age_to_userone()
-# get_coin_info()
-# get_account_assets()
-# get_userone_details()
 
 ########### custom commands #############
 
-### First commands were before Genesis Block implementation ###
-# Create correct domain and asset
+# Define a domain
 domain_to_define = 'healthcare'
-asset_to_define = 'PatientRecords'
-# create_specific_domain(domain_to_define)
-# create_specific_asset(domain_to_define, asset_to_define)
-# creating admin account in hospital (now defined in genesis.block)
-# hospital_admin_1_private_key, hospital_admin_1_public_key = create_account('admin', 'healthcare')
-# append_role('admin@hospital', 'admin')
-
-# testing create account functions
-# create_account_alice()
-
-# creating doctor account in hospital
+# creating doctor account in healthcare
 doctor_1_private_key, doctor_1_public_key = create_account('alice', 'healthcare')
 append_role('alice@healthcare', 'provider')
 
-# creating patient account in hospital (no need to append role since user is default)
+# creating patient account in healthcare (no need to append role since user is default)
 patient_1_private_key, patient_1_public_key = create_account('bob', 'healthcare')
-
+print("Printing out bob's keys for testing purposes")
+print("bob's public key: ", patient_1_public_key)
+print("bob's private key ", patient_1_private_key)
 # Adding an EHR to a patient's account
-# add_ehr('Bob@hospital', '308F3B37')
+add_ehr('bob', 'hospital', 'ehr1', '308F3B37')
 
 print('done with preset commands')
 
 ################### MENU COMMANDS ########################
 print("---------- Login Page -----------")
 username = input("Username: ")
+password = input("Private Key: ")
 # Uses local public and private key files
 while username.lower() != "admin":
     print("Invalid user " + username)
@@ -427,6 +302,7 @@ while username.lower() != "admin":
     input_role = ""
     input_ehr_ref = ""
     input_account = ""
+    input_key = ""
     input_peer = ""
     input_peer_IP = ""
     input_peer_port = ""
@@ -446,26 +322,33 @@ while choice != "q" and choice != "quit":
     choice = input()
     # Creating a new role is not allowed yet due to needing to define all permissions
     if choice == "1":
+        print("Create new Domain")
         input_domain = input('Create New Domain: ')
         create_specific_domain(input_domain)
     elif choice == "2":
+        print("Create new Asset")
         input_asset = input('Create New Asset: ')
         input_domain = input('Name of Domain: ')
         create_specific_asset(input_domain, input_asset)
     elif choice == "3":
+        print('Append a Role')
         input_role = input('Role to Append: ')
         input_account = input('Account to add role to: ')
         append_role(input_account, input_role)
     elif choice == "4":
-        print('Add EHR')
+        print('Add Account Detail: Example Account is alice@healthcare')
         input_account = input('Account Name: ')
-        input_ehr_ref = input('EHR Reference Number: ')
-        add_ehr(input_account, input_ehr_ref)
+        input_domain = input('Domain of Account: ')
+        input_key = input('Name of Detail: ')
+        input_ehr_ref = input('Account Detail to Add: ')
+        add_ehr(input_account, input_domain, input_key, input_ehr_ref)
     elif choice == "5":
         print('Create New Account')
         input_account = input('New Account Name: ')
         input_domain = input('Domain of New Account: ')
-        create_account(input_account, input_domain)
+        temp_public_key, temp_private_key = create_account(input_account, input_domain)
+        print("Public Key: ", temp_public_key)
+        print("Private Key: ", temp_private_key)
     elif choice == "6":
         print('Get Account Details')
         input_account = input('Account Name: ')
@@ -478,7 +361,7 @@ while choice != "q" and choice != "quit":
         input_peerkey = input("Peer Public Key: ")
         input_peer = input_peer_IP + ":" + input_peer_port
         add_peer(input_peer, input_peerkey)
-    elif choice == "q":
+    elif choice == "q" or choice == "quit":
         print("Goodbye!")
     else:
         print('Invalid Option Selected')

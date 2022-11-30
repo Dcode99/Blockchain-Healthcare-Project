@@ -273,95 +273,98 @@ def add_peer(peerIP, peerkey):
 
 ########### custom commands #############
 
-# Define a domain
-domain_to_define = 'healthcare'
-# creating doctor account in healthcare
-doctor_1_private_key, doctor_1_public_key = create_account('alice', 'healthcare')
-append_role('alice@healthcare', 'provider')
+# Python program to use
+# main for function call.
+if __name__ == "__main__":
+    # Define a domain
+    domain_to_define = 'healthcare'
+    # creating doctor account in healthcare
+    doctor_1_private_key, doctor_1_public_key = create_account('alice', 'healthcare')
+    append_role('alice@healthcare', 'provider')
 
-# creating patient account in healthcare (no need to append role since user is default)
-patient_1_private_key, patient_1_public_key = create_account('bob', 'healthcare')
-print("Printing out bob's keys for testing purposes")
-print("bob's public key: ", patient_1_public_key)
-print("bob's private key ", patient_1_private_key)
-# Adding an EHR to a patient's account
-add_ehr('bob', 'hospital', 'ehr1', '308F3B37')
+    # creating patient account in healthcare (no need to append role since user is default)
+    patient_1_private_key, patient_1_public_key = create_account('bob', 'healthcare')
+    print("Printing out bob's keys for testing purposes")
+    print("bob's public key: ", patient_1_public_key)
+    print("bob's private key ", patient_1_private_key)
+    # Adding an EHR to a patient's account
+    add_ehr('bob', 'hospital', 'ehr1', '308F3B37')
 
-print('done with preset commands')
-
-################### MENU COMMANDS ########################
-print("---------- Login Page -----------")
-username = input("Username: ")
-password = input("Private Key: ")
-# Uses local public and private key files
-while username.lower() != "admin":
-    print("Invalid user " + username)
+    print('done with preset commands')
+    
+    ################### MENU COMMANDS ########################
+    print("---------- Login Page -----------")
     username = input("Username: ")
-    input_domain = ""
-    input_asset = ""
-    input_role = ""
-    input_ehr_ref = ""
-    input_account = ""
-    input_key = ""
-    input_peer = ""
-    input_peer_IP = ""
-    input_peer_port = ""
+    password = input("Private Key: ")
+    # Uses local public and private key files
+    while username.lower() != "admin":
+        print("Invalid user " + username)
+        username = input("Username: ")
+        input_domain = ""
+        input_asset = ""
+        input_role = ""
+        input_ehr_ref = ""
+        input_account = ""
+        input_key = ""
+        input_peer = ""
+        input_peer_IP = ""
+        input_peer_port = ""
 
-################ EXECUTING COMMANDS ######################
-# Command list: get account details, create domain, create asset, create role, create account, append role, add ehr
-choice = "example"
-while choice != "q" and choice != "quit":
-    print('Choose a command, "q" or "quit" to quit:')
-    print('1. Create Specific Domain')
-    print('2. Create Specific Asset')
-    print('3. Append Role to an account')
-    print('4. Add EHR')
-    print('5. Create New Account')
-    print('6. Get account details')
-    print('7. Add Peer')
-    choice = input()
-    # Creating a new role is not allowed yet due to needing to define all permissions
-    if choice == "1":
-        print("Create new Domain")
-        input_domain = input('Create New Domain: ')
-        create_specific_domain(input_domain)
-    elif choice == "2":
-        print("Create new Asset")
-        input_asset = input('Create New Asset: ')
-        input_domain = input('Name of Domain: ')
-        create_specific_asset(input_domain, input_asset)
-    elif choice == "3":
-        print('Append a Role')
-        input_role = input('Role to Append: ')
-        input_account = input('Account to add role to: ')
-        append_role(input_account, input_role)
-    elif choice == "4":
-        print('Add Account Detail: Example Account is alice@healthcare')
-        input_account = input('Account Name: ')
-        input_domain = input('Domain of Account: ')
-        input_key = input('Name of Detail: ')
-        input_ehr_ref = input('Account Detail to Add: ')
-        add_ehr(input_account, input_domain, input_key, input_ehr_ref)
-    elif choice == "5":
-        print('Create New Account')
-        input_account = input('New Account Name: ')
-        input_domain = input('Domain of New Account: ')
-        temp_public_key, temp_private_key = create_account(input_account, input_domain)
-        print("Public Key: ", temp_public_key)
-        print("Private Key: ", temp_private_key)
-    elif choice == "6":
-        print('Get Account Details')
-        input_account = input('Account Name: ')
-        input_domain = input('Domain of Account: ')
-        get_account_details(input_account, input_domain)
-    elif choice == "7":
-        print('Add New Peer')
-        input_peer_IP = input("Peer IP: ")
-        input_peer_port = "10001"
-        input_peerkey = input("Peer Public Key: ")
-        input_peer = input_peer_IP + ":" + input_peer_port
-        add_peer(input_peer, input_peerkey)
-    elif choice == "q" or choice == "quit":
-        print("Goodbye!")
-    else:
-        print('Invalid Option Selected')
+    ################ EXECUTING COMMANDS ######################
+    # Command list: get account details, create domain, create asset, create role, create account, append role, add ehr
+    choice = "example"
+    while choice != "q" and choice != "quit":
+        print('Choose a command, "q" or "quit" to quit:')
+        print('1. Create Specific Domain')
+        print('2. Create Specific Asset')
+        print('3. Append Role to an account')
+        print('4. Add EHR')
+        print('5. Create New Account')
+        print('6. Get account details')
+        print('7. Add Peer')
+        choice = input()
+        # Creating a new role is not allowed yet due to needing to define all permissions
+        if choice == "1":
+            print("Create new Domain")
+            input_domain = input('Create New Domain: ')
+            create_specific_domain(input_domain)
+        elif choice == "2":
+            print("Create new Asset")
+            input_asset = input('Create New Asset: ')
+            input_domain = input('Name of Domain: ')
+            create_specific_asset(input_domain, input_asset)
+        elif choice == "3":
+            print('Append a Role')
+            input_role = input('Role to Append: ')
+            input_account = input('Account to add role to: ')
+            append_role(input_account, input_role)
+        elif choice == "4":
+            print('Add Account Detail: Example Account is alice@healthcare')
+            input_account = input('Account Name: ')
+            input_domain = input('Domain of Account: ')
+            input_key = input('Name of Detail: ')
+            input_ehr_ref = input('Account Detail to Add: ')
+            add_ehr(input_account, input_domain, input_key, input_ehr_ref)
+        elif choice == "5":
+            print('Create New Account')
+            input_account = input('New Account Name: ')
+            input_domain = input('Domain of New Account: ')
+            temp_public_key, temp_private_key = create_account(input_account, input_domain)
+            print("Public Key: ", temp_public_key)
+            print("Private Key: ", temp_private_key)
+        elif choice == "6":
+            print('Get Account Details')
+            input_account = input('Account Name: ')
+            input_domain = input('Domain of Account: ')
+            get_account_details(input_account, input_domain)
+        elif choice == "7":
+            print('Add New Peer')
+            input_peer_IP = input("Peer IP: ")
+            input_peer_port = "10001"
+            input_peerkey = input("Peer Public Key: ")
+            input_peer = input_peer_IP + ":" + input_peer_port
+            add_peer(input_peer, input_peerkey)
+        elif choice == "q" or choice == "quit":
+            print("Goodbye!")
+        else:
+            print('Invalid Option Selected')

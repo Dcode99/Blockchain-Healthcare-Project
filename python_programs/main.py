@@ -83,6 +83,7 @@ def get_account_details(acc_id, domain):
     response = net.send_query(query)
     data = response.account_detail_response
     print('Account id = {}, details = {}'.format(acc_id, data.detail))
+    return data
 
 
 @app.route('/newdomain/<domain>')
@@ -99,6 +100,7 @@ def create_specific_domain(domain):
     tx = IrohaCrypto.sign_transaction(
         iroha.transaction(command), ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
+    return tx
 
 
 @app.route('/newasset/<domain>/<asset>')
@@ -115,6 +117,7 @@ def create_specific_asset(domain, asset):
     tx = IrohaCrypto.sign_transaction(
         iroha.transaction(command), ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
+    return tx
 
 
 # This account is created with the new admin under the healthcare domain
@@ -135,7 +138,7 @@ def create_account(username, acc_domain):
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
     # print(tx)
-    return temp_private_key, temp_public_key
+    return temp_private_key, temp_public_key, tx
 
                         
 @app.route('/appendrole/<acc_id>/<role>')
@@ -149,6 +152,7 @@ def append_role(acc_id, role):
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
+    return tx
 
 
 @app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>')
@@ -162,6 +166,7 @@ def add_ehr(acc_id, domain, detail, ehr_reference):
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
+    return tx
 
 
 @app.route('/addpeer/<peerIP>/<peerkey>')
@@ -177,6 +182,20 @@ def add_peer(peerIP, peerkey):
     # And sign the transaction using the keys from earlier:
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     send_transaction_and_print_status(tx)
+    return tx
+
+
+@app.route('/cansetmydetails/<acc_id>/<myacc_id>')
+@trace
+def cansetmydetails(acc_id, myacc_id):
+    """
+    Give an account permission to set and get the user's account details
+    """
+    tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_set_my_account_detail)], creator_account=myacc_id)
+    IrohaCrypto.sign_transaction(tx1, ADMIN_PRIVATE_KEY)
+    tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_get_my_account_detail)], creator_account=myacc_id)
+    IrohaCrypto.sign_transaction(tx2, ADMIN_PRIVATE_KEY)
+    return tx1, tx2
 
 
 ########### custom commands #############

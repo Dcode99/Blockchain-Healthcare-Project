@@ -13,6 +13,7 @@ import binascii
 from iroha import IrohaCrypto
 from iroha import Iroha, IrohaGrpc
 from iroha import primitive_pb2
+from flask import Flask, request
 
 # The following line is actually about the permissions
 # you might be using for the transaction.
@@ -20,6 +21,8 @@ from iroha import primitive_pb2
 # https://iroha.readthedocs.io/en/main/develop/api/permissions.html
 from iroha.primitive_pb2 import can_set_my_account_detail
 import sys
+
+app = Flask(__name__)
 
 if sys.version_info[0] < 3:
     raise Exception('Python 3 or a more recent version is required.')
@@ -59,9 +62,6 @@ iroha = Iroha(ADMIN_ACCOUNT_ID)
 
 # Defining the nets for each node
 net = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR, IROHA_PORT))
-
-
-# net_2 = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR_2, IROHA_PORT_2))
 
 def trace(func):
     """
@@ -126,6 +126,7 @@ def create_domain_and_asset():
 
 
 ### NEW COMMANDS ###
+@app.route('/getdetails/<acc_id>/<domain>')
 @trace
 def get_account_details(acc_id, domain):
     """
@@ -139,6 +140,7 @@ def get_account_details(acc_id, domain):
     print('Account id = {}, details = {}'.format(acc_id, data.detail))
 
 
+@app.route('/newdomain/<domain>')
 @trace
 def create_specific_domain(domain):
     """
@@ -154,6 +156,7 @@ def create_specific_domain(domain):
     send_transaction_and_print_status(tx)
 
 
+@app.route('/newasset/<domain>/<asset>')
 @trace
 def create_specific_asset(domain, asset):
     """
@@ -200,6 +203,7 @@ def create_role(defined_role, perms):
 
 
 # This account is created with the new admin under the healthcare domain
+@app.route('/createaccount/<username>/<acc_domain>')
 @trace
 def create_account(username, acc_domain):
     """
@@ -233,6 +237,7 @@ def create_account_alice():
     # print(tx)
 
 
+@app.route('/appendrole/<acc_id>/<role>')
 @trace
 def append_role(acc_id, role):
     """
@@ -245,6 +250,7 @@ def append_role(acc_id, role):
     send_transaction_and_print_status(tx)
 
 
+@app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>')
 @trace
 def add_ehr(acc_id, domain, detail, ehr_reference):
     """
@@ -257,6 +263,7 @@ def add_ehr(acc_id, domain, detail, ehr_reference):
     send_transaction_and_print_status(tx)
 
 
+@app.route('/addpeer/<peerIP>/<peerkey>')
 @trace
 def add_peer(peerIP, peerkey):
     """

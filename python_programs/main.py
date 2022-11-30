@@ -39,25 +39,6 @@ ADMIN_ACCOUNT_ID = os.getenv('ADMIN_ACCOUNT_ID', 'admin@test')
 ADMIN_PRIVATE_KEY = os.getenv(
     'ADMIN_PRIVATE_KEY', 'f101537e319568c765b2cc89698325604991dca57b9716b58016b253506cab70')
 print(ADMIN_ACCOUNT_ID)
-
-# Here we will create user keys
-user_private_key = IrohaCrypto.private_key()
-user_public_key = IrohaCrypto.derive_public_key(user_private_key)
-# Creating the user Keys for this account
-new_private_key = IrohaCrypto.private_key()
-new_public_key = IrohaCrypto.derive_public_key(new_private_key)
-
-# Creating admin keys for the domain
-# admin_private_key = IrohaCrypto.private_key()
-# admin_public_key = IrohaCrypto.derive_public_key(user_private_key)
-
-# writing admin key to a file
-# with open('admin@healthcare.priv', 'wb') as f:
-# f.write(admin_private_key)
-
-# with open('admin@healthcare.pub', 'wb') as f:
-# f.write(admin_public_key)
-
 iroha = Iroha(ADMIN_ACCOUNT_ID)
 
 # Defining the nets for each node
@@ -88,43 +69,7 @@ def send_transaction_and_print_status(transaction):
     for status in net.tx_status_stream(transaction):
         print(status)
 
-
-@trace
-def send_2_transaction_and_print_status(transaction):
-    hex_hash = binascii.hexlify(IrohaCrypto.hash(transaction))
-    print('Transaction hash = {}, creator = {}'.format(
-        hex_hash, transaction.payload.reduced_payload.creator_account_id))
-    net.send_tx(transaction)
-    for status in net.tx_status_stream(transaction):
-        print(status)
-
-
-# For example, below we define a transaction made of 2 commands:
-# CreateDomain and CreateAsset.
-# Each of Iroha commands has its own set of parameters and there are many commands.
-# You can check out all of them here:
-# https://iroha.readthedocs.io/en/main/develop/api/commands.html
-@trace
-def create_domain_and_asset():
-    """
-    Create domain 'domain' and asset 'coin#domain' with precision 2
-    """
-    commands = [
-        iroha.command('CreateDomain', domain_id='domain', default_role='user'),
-        iroha.command('CreateAsset', asset_name='coin',
-                      domain_id='domain', precision=2)
-    ]
-    # And sign the transaction using the keys from earlier:
-    tx = IrohaCrypto.sign_transaction(
-        iroha.transaction(commands), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-# You can define queries
-# (https://iroha.readthedocs.io/en/main/develop/api/queries.html)
-# the same way.
-
-
+        
 ### NEW COMMANDS ###
 @app.route('/getdetails/<acc_id>/<domain>')
 @trace
@@ -132,7 +77,7 @@ def get_account_details(acc_id, domain):
     """
     Get all the kv-storage entries for username@domain
     """
-    query = iroha.query('GetAccountDetail', account_id='userone@domain')
+    query = iroha.query('GetAccountDetail', account_id=acc_id+"@"+domain')
     IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
 
     response = net.send_query(query)
@@ -172,36 +117,6 @@ def create_specific_asset(domain, asset):
     send_transaction_and_print_status(tx)
 
 
-@trace
-def create_specific_domain_and_asset(domain, asset):
-    """
-    Create domain and asset with precision 2 from given information
-    """
-    commands = [
-        iroha.command('CreateDomain', domain_id=domain, default_role='user'),
-        iroha.command('CreateAsset', asset_name=asset,
-                      domain_id=domain, precision=2)
-    ]
-    # And sign the transaction using the keys from earlier:
-    tx = IrohaCrypto.sign_transaction(
-        iroha.transaction(commands), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
-@trace
-def create_role(defined_role, perms):
-    """
-    Create role from given information
-    """
-    command = [
-        iroha.command('CreateRole', role_name=defined_role, permissions=perms)
-    ]
-    # And sign the transaction using the keys from earlier:
-    tx = IrohaCrypto.sign_transaction(
-        iroha.transaction(command), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-
-
 # This account is created with the new admin under the healthcare domain
 @app.route('/createaccount/<username>/<acc_domain>')
 @trace
@@ -222,21 +137,7 @@ def create_account(username, acc_domain):
     # print(tx)
     return temp_private_key, temp_public_key
 
-
-@trace
-def create_account_alice():
-    """
-    Create account 'userone@domain'
-    """
-    tx = iroha.transaction([
-        iroha.command('CreateAccount', account_name='alice', domain_id='test',
-                      public_key=new_public_key)
-    ])
-    IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    # print(tx)
-
-
+                        
 @app.route('/appendrole/<acc_id>/<role>')
 @trace
 def append_role(acc_id, role):

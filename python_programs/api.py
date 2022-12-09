@@ -87,8 +87,9 @@ def get_account_details(acc_id, domain):
 
     response = net.send_query(query)
     data = response.account_detail_response
-    print('Account id = {}, details = {}'.format(acc_id, data.detail))
-    return data
+    s = 'Account id = {}, details = {}'.format(acc_id, data.detail)
+    print(s)
+    return s
 
 
 @app.route('/newdomain/<domain>')

@@ -55,7 +55,7 @@ def trace(func):
         result = func(*args, **kwargs)
         print('\tLeaving "{}"'.format(name))
         return result
-
+    tracer.__name__ = func.__name__
     return tracer
 
 

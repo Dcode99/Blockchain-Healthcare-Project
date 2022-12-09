@@ -206,7 +206,7 @@ if __name__ == "__main__":
     # Define a domain
     domain_to_define = 'healthcare'
     # creating doctor account in healthcare
-    doctor_1_private_key, doctor_1_public_key = create_account('alice', 'healthcare')
+    doctor_1_private_key, doctor_1_public_key, tx = create_account('alice', 'healthcare')
     append_role('alice@healthcare', 'provider')
 
     # creating patient account in healthcare (no need to append role since user is default)

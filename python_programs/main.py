@@ -77,7 +77,7 @@ def get_account_details(acc_id, domain):
     """
     Get all the kv-storage entries for username@domain
     """
-    query = iroha.query('GetAccountDetail', account_id=acc_id+"@"+domain')
+    query = iroha.query('GetAccountDetail', account_id=acc_id+'@'+domain)
     IrohaCrypto.sign_query(query, ADMIN_PRIVATE_KEY)
 
     response = net.send_query(query)

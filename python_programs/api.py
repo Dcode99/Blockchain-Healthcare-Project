@@ -67,11 +67,11 @@ def send_transaction_and_print_status(transaction):
     print('Transaction hash = {}, creator = {}'.format(
         hex_hash, transaction.payload.reduced_payload.creator_account_id))
     net.send_tx(transaction)
-    result = "REJECTED"
+    result = "REJECTED\n"
     for status in net.tx_status_stream(transaction):
         print(status)
         if re.search('COMMITTED', str(status)):
-            result = "COMMITTED"
+            result = "COMMITTED\n"
     return result
 
         

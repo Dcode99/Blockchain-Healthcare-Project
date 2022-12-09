@@ -68,6 +68,10 @@ def send_transaction_and_print_status(transaction):
     net.send_tx(transaction)
     for status in net.tx_status_stream(transaction):
         print(status)
+        if re.search('COMMITTED', status:
+            return "COMMITTED"
+        else:
+            return "REJECTED"
 
         
 ### NEW COMMANDS ###
@@ -99,8 +103,8 @@ def create_specific_domain(domain):
     # And sign the transaction using the keys from earlier:
     tx = IrohaCrypto.sign_transaction(
         iroha.transaction(command), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    return tx
+    result = send_transaction_and_print_status(tx)
+    return result
 
 
 @app.route('/newasset/<domain>/<asset>')
@@ -116,8 +120,8 @@ def create_specific_asset(domain, asset):
     # And sign the transaction using the keys from earlier:
     tx = IrohaCrypto.sign_transaction(
         iroha.transaction(command), ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    return tx
+    result = send_transaction_and_print_status(tx)
+    return result
 
 
 # This account is created with the new admin under the healthcare domain
@@ -136,9 +140,8 @@ def create_account(username, acc_domain):
                       public_key=temp_public_key)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    # print(tx)
-    return temp_private_key, temp_public_key, tx
+    result = send_transaction_and_print_status(tx)
+    return temp_private_key, temp_public_key, result
 
                         
 @app.route('/appendrole/<acc_id>/<role>')
@@ -151,8 +154,8 @@ def append_role(acc_id, role):
         iroha.command('AppendRole', account_id=acc_id, role_name=role)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    return tx
+    result = send_transaction_and_print_status(tx)
+    return result
 
 
 @app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>')
@@ -165,8 +168,8 @@ def add_ehr(acc_id, domain, detail, ehr_reference):
         iroha.command('SetAccountDetail', account_id=acc_id + '@' + domain, key=detail, value=ehr_reference)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    return tx
+    result = send_transaction_and_print_status(tx)
+    return result
 
 
 @app.route('/addpeer/<peerIP>/<peerkey>')
@@ -181,8 +184,8 @@ def add_peer(peerIP, peerkey):
     tx = iroha.transaction([iroha.command('AddPeer', peer=peer0)])
     # And sign the transaction using the keys from earlier:
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    send_transaction_and_print_status(tx)
-    return tx
+    result = send_transaction_and_print_status(tx)
+    return result
 
 
 @app.route('/cansetmydetails/<acc_id>/<myacc_id>')
@@ -193,6 +196,8 @@ def cansetmydetails(acc_id, myacc_id):
     """
     tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_set_my_account_detail)], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx1, ADMIN_PRIVATE_KEY)
-    tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_get_my_account_detail)], creator_account=myacc_id)
+    result1 = send_transaction_and_print_status(tx1)
+    tx2 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_get_my_account_detail)], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx2, ADMIN_PRIVATE_KEY)
-    return tx1, tx2
+    result2 = send_transaction_and_print_status(tx2)
+    return result1, result2

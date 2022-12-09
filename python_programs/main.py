@@ -210,7 +210,7 @@ if __name__ == "__main__":
     append_role('alice@healthcare', 'provider')
 
     # creating patient account in healthcare (no need to append role since user is default)
-    patient_1_private_key, patient_1_public_key = create_account('bob', 'healthcare')
+    patient_1_private_key, patient_1_public_key, tx = create_account('bob', 'healthcare')
     print("Printing out bob's keys for testing purposes")
     print("bob's public key: ", patient_1_public_key)
     print("bob's private key ", patient_1_private_key)

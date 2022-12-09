@@ -9,6 +9,7 @@
 # Python library generally consists of 3 parts:
 # Iroha, IrohaCrypto and IrohaGrpc which we need to import:
 import os
+import re
 import binascii
 from iroha import IrohaCrypto
 from iroha import Iroha, IrohaGrpc

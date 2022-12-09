@@ -142,6 +142,7 @@ def create_account(username, acc_domain):
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     result = send_transaction_and_print_status(tx)
+    print(temp_private_key, temp_public_key, result)
     return temp_private_key, temp_public_key, result
 
                         

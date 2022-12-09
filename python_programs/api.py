@@ -68,7 +68,7 @@ def send_transaction_and_print_status(transaction):
     net.send_tx(transaction)
     for status in net.tx_status_stream(transaction):
         print(status)
-        if re.search('COMMITTED', status:
+        if re.search('COMMITTED', status):
             return "COMMITTED"
         else:
             return "REJECTED"

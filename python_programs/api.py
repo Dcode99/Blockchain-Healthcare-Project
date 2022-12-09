@@ -143,7 +143,7 @@ def create_account(username, acc_domain):
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     result = send_transaction_and_print_status(tx)
     print(temp_private_key, temp_public_key, result)
-    return str(temp_private_key)
+    return  '{} {} {}'.format(temp_private_key, temp_public_key, result)
 
                         
 @app.route('/appendrole/<acc_id>/<role>')
@@ -202,4 +202,4 @@ def cansetmydetails(acc_id, myacc_id):
     tx2 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_get_my_account_detail)], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx2, ADMIN_PRIVATE_KEY)
     result2 = send_transaction_and_print_status(tx2)
-    return result1, result2
+    return '{} {}'.format(result1, result2)

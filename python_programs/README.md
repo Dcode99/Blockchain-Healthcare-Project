@@ -1,4 +1,3 @@
-# Information on different files contained here:
 # api.py:
 requires the apikey to be included in each command
 

@@ -36,7 +36,7 @@ To execute the python program and work on the blockchain after the network is se
 
 # Flask Execution
 
-To start the flask server, the command is "flask --app python_programs/api.py run --host=0.0.0.0". This command runs the flask application using the python program api.py on all public IPs, which for the primary node in testing is 128.163.181.53.
+To start the flask server, the command is "flask --app python_programs/api.py run --host=0.0.0.0". This command runs the flask application using the python program api.py on all public IPs, which for the primary node in testing is 128.163.181.53. Running without "--host" will only run the flask application locally.
 
 # Sources: 
 

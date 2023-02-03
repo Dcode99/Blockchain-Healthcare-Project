@@ -34,6 +34,10 @@ To set up the network, simply run the network shell script as root user using "b
 
 To execute the python program and work on the blockchain after the network is setup, use the following command from the base directory for this project: "python3 python_programs/main.py". Once executed, the script will run a series of test commands with test output before giving the user a menu of further commands they can run using custom functions to execute on the blockchain. The list of commands includes getting account details, creating a domain, creating an asset, creating an account, appending a role to an account, adding a record. The current iteration runs using the administrator keys.
 
+# Flask Execution
+
+To start the flask server, the command is "flask --app python_programs/api.py run --host=0.0.0.0". This command runs the flask application using the python program api.py on all public IPs, which for the primary node in testing is 128.163.181.53.
+
 # Sources: 
 
 The initial commands and structure for this document used is from the Hyperledger Iroha Python repository (https://github.com/hyperledger/iroha-python).

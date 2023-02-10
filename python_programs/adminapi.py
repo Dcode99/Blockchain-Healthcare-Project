@@ -182,7 +182,8 @@ def add_peer(peerIP, peerport, peerkey):
     Add a peer to the network given an IP address
     """
     peer0 = primitive_pb2.Peer()
-    peer0.address = peerIP + ":" + peerport
+    ip = str(peerIP) + ":" + str(peerport)
+    peer0.address = peerIP
     peer0.peer_key = peerkey
     tx = iroha.transaction([iroha.command('AddPeer', peer=peer0)])
     # And sign the transaction using the keys from earlier:

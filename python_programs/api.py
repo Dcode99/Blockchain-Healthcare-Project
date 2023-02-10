@@ -176,7 +176,7 @@ def add_ehr(acc_id, domain, detail, ehr_reference):
 
 @app.route('/addpeer/<peerIP>/<peerport>/<peerkey>/<apikey>')
 @trace
-def add_peer(peerIP, peerkey):
+def add_peer(peerIP, peerport, peerkey):
     """
     Add a peer to the network given an IP address
     """

@@ -175,14 +175,14 @@ def add_ehr(acc_id, domain, detail, ehr_reference):
     return result
 
 
-@app.route('/addpeer/<peerIP>/<peerkey>')
+@app.route('/addpeer/<peerIP>/<peerport>/<peerkey>')
 @trace
 def add_peer(peerIP, peerkey):
     """
     Add a peer to the network given an IP address
     """
     peer0 = primitive_pb2.Peer()
-    peer0.address = peerIP
+    peer0.address = peerIP + ":" + peerport
     peer0.peer_key = peerkey
     tx = iroha.transaction([iroha.command('AddPeer', peer=peer0)])
     # And sign the transaction using the keys from earlier:

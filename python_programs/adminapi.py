@@ -14,7 +14,6 @@ import binascii
 from iroha import IrohaCrypto
 from iroha import Iroha, IrohaGrpc
 from iroha.primitive_pb2 import can_set_my_account_detail
-from iroha.primitive_pb2 import can_get_my_account_detail
 from flask import Flask, request
 
 # The following line is actually about the permissions

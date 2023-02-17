@@ -200,10 +200,10 @@ def cansetmydetails(acc_id, acc_dom, myacc_id, myacc_dom):
     """
     acc_id = acc_id + '@' + acc_dom
     myacc_id = myacc_id + '@' + myacc_dom
-    tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=[primitive_pb2.can_set_my_account_detail])], creator_account=myacc_id)
+    tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_set_my_account_detail)], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx1, ADMIN_PRIVATE_KEY)
     result1 = send_transaction_and_print_status(tx1)
-    tx2 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=[primitive_pb2.can_get_my_account_detail])], creator_account=myacc_id)
+    tx2 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_get_my_account_detail)], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx2, ADMIN_PRIVATE_KEY)
     result2 = send_transaction_and_print_status(tx2)
     print(result1)

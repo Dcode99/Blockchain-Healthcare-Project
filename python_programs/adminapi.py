@@ -202,11 +202,11 @@ def cansetmydetails(acc_id, acc_dom, myacc_id, myacc_dom):
     # permission to set account details
     acc_id = acc_id + '@' + acc_dom
     myacc_id = myacc_id + '@' + myacc_dom
-    tx1 = iroha.transaction([
+    tx = iroha.transaction([
         iroha.command('GrantPermission', account_id=acc_id, 
                       permission=can_set_my_account_detail)
     ], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
-    result1 = send_transaction_and_print_status(tx)
+    result = send_transaction_and_print_status(tx)
     print(result)
     return result

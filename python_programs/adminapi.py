@@ -13,7 +13,8 @@ import re
 import binascii
 from iroha import IrohaCrypto
 from iroha import Iroha, IrohaGrpc
-from iroha import primitive_pb2
+from iroha.primitive_pb2 import can_set_my_account_detail
+from iroha.primitive_pb2 import can_get_my_account_detail
 from flask import Flask, request
 
 # The following line is actually about the permissions
@@ -167,8 +168,9 @@ def add_ehr(acc_id, domain, detail, ehr_reference):
     """
     Add the EHR reference number as an account detail (setting account detail)
     """
+    acc_id = acc_id + '@' + domain
     tx = iroha.transaction([
-        iroha.command('SetAccountDetail', account_id=acc_id + '@' + domain, key=detail, value=ehr_reference)
+        iroha.command('SetAccountDetail', account_id=acc_id, key=detail, value=ehr_reference)
     ])
     IrohaCrypto.sign_transaction(tx, ADMIN_PRIVATE_KEY)
     result = send_transaction_and_print_status(tx)
@@ -198,14 +200,23 @@ def cansetmydetails(acc_id, acc_dom, myacc_id, myacc_dom):
     """
     Give an account permission to set and get the user's account details
     """
+    # permission to set account details
     acc_id = acc_id + '@' + acc_dom
     myacc_id = myacc_id + '@' + myacc_dom
-    tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_set_my_account_detail)], creator_account=myacc_id)
+    tx1 = iroha.transaction([
+        iroha.command('GrantPermission', account_id=acc_id, 
+                      permission=can_set_my_account_detail)
+    ], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx1, ADMIN_PRIVATE_KEY)
     result1 = send_transaction_and_print_status(tx1)
-    tx2 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_get_my_account_detail)], creator_account=myacc_id)
+    print(result1)
+    
+    # permission to get account details
+    tx2 = iroha.transaction([
+        iroha.command('GrantPermission', account_id=acc_id, 
+                      permission=can_get_my_account_detail)
+    ], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx2, ADMIN_PRIVATE_KEY)
     result2 = send_transaction_and_print_status(tx2)
-    print(result1)
     print(result2)
     return '{} {}'.format(result1, result2)

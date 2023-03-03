@@ -9,6 +9,11 @@ setup(
     author='Dillon Tate',
     author_email='dillon.tate@uky.edu',
     description='Python Hyperledger Iroha Healthcare Permissions Library',
-    install_requires=['websocket-client'],
+    install_requires=['iroha',
+                     'flask',
+                     'os',
+                     're',
+                     'binascii',
+                     'sys'],
 
 )

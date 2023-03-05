@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name='pyhyperhealth',
+    name='Blockchain-Healthcare-Project',
     version='0.1',
-    packages=['pyhyperhealth'],
+    packages=['Blockchain-Healthcare-Project'],
     url='https://github.com/Dcode99/Blockchain-Healthcare-Project/',
     license='Apache 2.0',
     author='Dillon Tate',

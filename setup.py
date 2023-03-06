@@ -11,8 +11,6 @@ setup(
     description='Python Hyperledger Iroha Healthcare Permissions Library',
     install_requires=['iroha',
                      'flask',
-                     're',
-                     'binascii',
-                     'sys'],
+                     'binascii'],
 
 )

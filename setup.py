@@ -10,7 +10,6 @@ setup(
     author_email='dillon.tate@uky.edu',
     description='Python Hyperledger Iroha Healthcare Permissions Library',
     install_requires=['iroha',
-                     'flask',
-                     'binascii'],
+                     'flask'],
 
 )

@@ -24,11 +24,11 @@ While blockchain is great for separating user roles and keeping track of access,
 
 Prerequisites
 
-To run this demonstration, a system running Unbuntu and docker is needed, along with an installation of Python3, pip3, and the iroha python library.
+To run this demonstration, a system running Unbuntu and docker is needed, along with an installation of Python3, pip3, and the iroha python library. To install this project as a library, a version is available using "pip install pyhyperhealth". The PyPi link is available here: https://pypi.org/project/pyhyperhealth/#description
 
 Network Requirements
 
-To set up the network, simply run the network shell script as root user using "bash network.sh down" to clear the setup, and "bash network.sh up_1" to setup the main network. To restart the network, use the command "bash network.sh restart_1" as root. The peer-addition branch of the project requires specific machines and IP addresses, and it will not succeed without them. These can be edited if the user desires to use different IP addresses, or the multiple nodes branch can be used for local testing. The shell script is slightly different in some branches, make sure to look at the network.sh to determine which argument is needed.
+To set up the network, simply run the network shell script as root user using "bash pyhyperhealth/network.sh down" to clear the setup, and "bash pyhyperhealth/network.sh up_1" to setup the main network. To restart the network, use the command "bash pyhyperhealth/network.sh restart_1" as root. The peer-addition branch of the project requires specific machines and IP addresses, and it will not succeed without them. These can be edited if the user desires to use different IP addresses, or the multiple nodes branch can be used for local testing. The shell script is slightly different in some branches, make sure to look at the network.sh to determine which argument is needed.
 
 Python Exectuion
 
@@ -36,7 +36,7 @@ To execute the python program and work on the blockchain after the network is se
 
 Flask Execution
 
-To start the flask server, the command is "flask --app python_programs/api.py run --host=0.0.0.0". This command runs the flask application using the python program api.py on all public IPs, which for the primary node in testing is 128.163.181.53. Running without "--host" will only run the flask application locally.
+To start the flask server, the command is "flask --app pyhyperhealth/api.py run --host=0.0.0.0". This command runs the flask application using the python program api.py on all public IPs, which for the primary node in testing is 128.163.181.53. Running without "--host" will only run the flask application locally.
 
 Sources: 
 

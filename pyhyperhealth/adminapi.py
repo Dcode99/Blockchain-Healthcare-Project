@@ -147,12 +147,13 @@ def create_account(username, acc_domain):
     return  'Private Key: {} \nPublic Key: {} \nSuccess: {}'.format(temp_private_key, temp_public_key, result)
 
                         
-@app.route('/appendrole/<acc_id>/<role>')
+@app.route('/appendrole/<acc_id>/<acc_domain>/<role>')
 @trace
-def append_role(acc_id, role):
+def append_role(acc_id, acc_domain, role):
     """
     Create an account in the form of 'username@domain'
     """
+    acc_id = acc_id + '@' + acc_domain
     tx = iroha.transaction([
         iroha.command('AppendRole', account_id=acc_id, role_name=role)
     ])
@@ -161,7 +162,7 @@ def append_role(acc_id, role):
     return result
 
 
-@app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>')
+@app.route('/addehr/<acc_id>/<acc_domain>/<detail>/<ehr_reference>')
 @trace
 def add_ehr(acc_id, domain, detail, ehr_reference):
     """

@@ -12,7 +12,7 @@ A combination of Golang (https://blog.logrocket.com/how-to-build-blockchain-from
 	
 MyClinic.com (https://myclinic.com/) was created using Hyperledger, and uses the blockchain system “to schedule appointments, review medical reports and request further investigations or assistance”.
 	
-Verified.Me is a Canadian blockchain-based digital identity network that uses Hyperledger fabric to allow consumers to choose who to share healthcare information with.
+Verified.Me (https://verified.me/) is a Canadian blockchain-based digital identity network that uses Hyperledger fabric to allow consumers to choose who to share healthcare information with.
 
 Project Structure
 

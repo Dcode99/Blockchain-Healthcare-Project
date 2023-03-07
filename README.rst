@@ -30,17 +30,13 @@ Network Requirements
 
 To set up the network as a docker container, simply run the network shell script as root user using "bash PATH/TO/FILE/network.sh down" to clear the setup, and "bash pyhyperhealth/network.sh up_1" to setup the main network. To restart the network, use the command "bash PATH/TO/FILE/network.sh restart_1" as root. The peer-addition branch of the project requires specific machines and IP addresses, and it will not succeed without them. These can be edited if the user desires to use different IP addresses, or the multiple nodes branch can be used for local testing. The shell script is slightly different in some branches, make sure to look at the network.sh to determine which argument is needed.
 
-Alternate Setup: Flask Server
-
-Another way to run this project is to use the flask setup. This creates a flask server to handle API calls. To run the flask server locally, use the command "flas --app PATH/TO/FILE/api.py run". Otherwise, you can add the argument "--host=0.0.0.0" to run the flask server from the IP address set for the nodes in the Python program. These can be changed in the program to whatever IP address you wish to run the node on.
-
 Python Exectuion
 
 To execute the python program and work on the blockchain after the network is setup, use the following command from the base directory for this project: "python3 PATH/TO/FILE/main.py". Once executed, the script will run a series of test commands with test output before giving the user a menu of further commands they can run using custom functions to execute on the blockchain. The list of commands includes getting account details, creating a domain, creating an asset, creating an account, appending a role to an account, adding a record. The current iteration runs using the administrator keys.
 
 Flask Execution
 
-To start the flask server, the command is "flask --app PATH/TO/FILE/api.py run --host=0.0.0.0". This command runs the flask application using the python program api.py on all public IPs, which for the primary node in testing is 128.163.181.53. Running without "--host" will only run the flask application locally.
+To start the flask server for API calls instead, the command is "flask --app PATH/TO/FILE/api.py run --host=0.0.0.0". This command runs the flask application using the python program api.py on all public IPs, which as default is 128.163.181.53. Running without "--host=0.0.0.0" will only run the flask application locally.
 
 Sources: 
 

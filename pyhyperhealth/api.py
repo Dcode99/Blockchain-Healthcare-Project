@@ -34,13 +34,6 @@ if sys.version_info[0] < 3:
 IROHA_HOST_ADDR = os.getenv('IROHA_HOST_ADDR', '128.163.181.53')
 IROHA_PORT = os.getenv('IROHA_PORT', '50051')
 
-ADMIN_ACCOUNT_ID = os.getenv('ADMIN_ACCOUNT_ID', 'admin@test')
-ADMIN_PRIVATE_KEY = os.getenv(
-    'ADMIN_PRIVATE_KEY', 'f101537e319568c765b2cc89698325604991dca57b9716b58016b253506cab70')
-print(ADMIN_ACCOUNT_ID)
-iroha = Iroha(ADMIN_ACCOUNT_ID)
-print(iroha)
-
 # Defining the nets for each node
 net = IrohaGrpc('{}:{}'.format(IROHA_HOST_ADDR, IROHA_PORT))
 

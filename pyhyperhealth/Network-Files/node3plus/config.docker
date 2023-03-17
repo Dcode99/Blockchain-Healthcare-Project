@@ -1,0 +1,32 @@
+{
+  "block_store_path" : "/tmp/block_store/",
+  "torii_port" : 50051,
+  "internal_port" : 10001,
+  "database": {
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres",
+    "password": "mysecretpassword",
+    "working database": "iroha_default",
+    "maintenance database": "postgres"
+  },
+  "max_proposal_size" : 10,
+  "proposal_delay" : 5000,
+  "vote_delay" : 5000,
+  "mst_enable" : false,
+  "mst_expiration_time" : 1440,
+  "max_rounds_delay": 3000,
+  "proposal_creation_timeout": 3000,
+  "stale_stream_max_rounds": 2,
+  "initial_peers": [
+  {
+    "address": "128.163.181.53:10001",
+    "public_key": "bddd58404d1315e0eb27902c5d7c8eb0602c16238f005773df406bc191308929"
+  },
+  {
+    "address": "128.163.181.54:10001",
+    "public_key": "3ad86d45d8b8e89298d49185b3418fc14a5b0ecbf3b26cb0a592c8ba6b8cae8e"
+  }
+]
+}

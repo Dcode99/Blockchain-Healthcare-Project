@@ -24,7 +24,7 @@ While blockchain is great for separating user roles and keeping track of access,
 
 Prerequisites
 
-To run this demonstration, a system running Unbuntu and docker is needed, along with an installation of Python3, pip3, and the iroha python library. To install this project as a library, a version is available using "pip install pyhyperhealth". The PyPi link is available here: https://pypi.org/project/pyhyperhealth/#description
+To run this demonstration, a system running Unbuntu and docker is needed, along with an installation of Python3, pip3, and the iroha python library. To install this project as a library, a version is available using "pip install pyhyperhealth". Once downloaded, you can find the location of the files on your computer using "pip show pyhyperhealth". The PyPi link is available here: https://pypi.org/project/pyhyperhealth/#description
 
 Network Requirements
 

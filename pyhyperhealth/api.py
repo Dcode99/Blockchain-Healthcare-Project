@@ -77,7 +77,7 @@ def send_transaction_and_print_status(transaction):
 ### NEW COMMANDS ###
 @app.route('/getdetails/<acc_id>/<domain>/<apikey>')
 @trace
-def get_account_details(acc_id, domain):
+def get_account_details(acc_id, domain, apikey):
     """
     Get all the kv-storage entries for username@domain
     """
@@ -93,7 +93,7 @@ def get_account_details(acc_id, domain):
 
 @app.route('/newdomain/<domain>/<apikey>')
 @trace
-def create_specific_domain(domain):
+def create_specific_domain(domain, apikey):
     """
     Create domain and asset with precision 2 from given information
     """
@@ -110,7 +110,7 @@ def create_specific_domain(domain):
 
 @app.route('/newasset/<domain>/<asset>/<apikey>')
 @trace
-def create_specific_asset(domain, asset):
+def create_specific_asset(domain, asset, apikey):
     """
     Create domain and asset with precision 2 from given information
     """
@@ -128,7 +128,7 @@ def create_specific_asset(domain, asset):
 # This account is created with the new admin under the healthcare domain
 @app.route('/createaccount/<username>/<acc_domain>/<apikey>')
 @trace
-def create_account(username, acc_domain):
+def create_account(username, acc_domain, apikey):
     """
     Create an account in the form of 'username@domain'
     """
@@ -148,7 +148,7 @@ def create_account(username, acc_domain):
                         
 @app.route('/appendrole/<acc_id>/<role>/<apikey>')
 @trace
-def append_role(acc_id, role):
+def append_role(acc_id, role, apikey):
     """
     Create an account in the form of 'username@domain'
     """
@@ -162,7 +162,7 @@ def append_role(acc_id, role):
 
 @app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>/<apikey>')
 @trace
-def add_ehr(acc_id, domain, detail, ehr_reference):
+def add_ehr(acc_id, domain, detail, ehr_reference, apikey):
     """
     Add the EHR reference number as an account detail (setting account detail)
     """
@@ -176,7 +176,7 @@ def add_ehr(acc_id, domain, detail, ehr_reference):
 
 @app.route('/addpeer/<peerIP>/<peerport>/<peerkey>/<apikey>')
 @trace
-def add_peer(peerIP, peerport, peerkey):
+def add_peer(peerIP, peerport, peerkey,apikey):
     """
     Add a peer to the network given an IP address
     """
@@ -192,7 +192,7 @@ def add_peer(peerIP, peerport, peerkey):
 
 @app.route('/cansetmydetails/<acc_id>/<myacc_id>/<apikey>')
 @trace
-def cansetmydetails(acc_id, myacc_id):
+def cansetmydetails(acc_id, myacc_id, apikey):
     """
     Give an account permission to set and get the user's account details
     """

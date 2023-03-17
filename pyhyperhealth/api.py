@@ -203,3 +203,7 @@ def cansetmydetails(acc_id, myacc_id):
     IrohaCrypto.sign_transaction(tx2, apikey)
     result2 = send_transaction_and_print_status(tx2)
     return '{} {}'.format(result1, result2)
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port='5000', debug=True)

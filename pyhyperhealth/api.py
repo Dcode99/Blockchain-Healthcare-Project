@@ -66,7 +66,10 @@ def send_transaction_and_print_status(transaction):
             result = "COMMITTED\n"
     return result
 
-        
+# acc_id is the account ID without the domain
+# domain is the domain of the account
+# user is the account ID and the domain of the user submitting the request
+# apikey is the api key of the user submitting the request
 ### NEW COMMANDS ###
 @app.route('/getdetails/<acc_id>/<domain>/<apikey>')
 @trace

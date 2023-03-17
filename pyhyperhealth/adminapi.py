@@ -211,3 +211,7 @@ def cansetmydetails(acc_id, acc_dom, myacc_id, myacc_dom):
     result = send_transaction_and_print_status(tx)
     print(result)
     return result
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port='8000', debug=True)

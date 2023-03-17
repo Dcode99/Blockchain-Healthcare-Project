@@ -45,4 +45,8 @@ The network structure for multiple Iroha nodes is based off of the work by Ta-Se
 
 Notes:
 
-Commands for setting up the blockchain are located in the "Notes on creating iroha node" document. These notes detail how to delete and set up a new blockchain if you have the prerequisites installed. The official guide is located in the Iroha documentation (https://iroha.readthedocs.io/en/main/getting_started/index.html).
+The official guide is located in the Iroha documentation (https://iroha.readthedocs.io/en/main/getting_started/index.html).
+
+- When changing the node are using to submit commands, edit the peer IP in the python file you want to execute (api.py or adminapi.py)
+- When starting the blockchain from a different peer than the example, edit the peer address in the python file you wish to execute and edit the genesis file in the node1 folder.
+- When adding the second peer ONLY, edit the genesis block in the node2 folder to show that peer as the second peer. The third and later peers can use the same genesis block.

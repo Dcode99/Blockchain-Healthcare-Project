@@ -28,7 +28,7 @@ To run this demonstration, a system running Unbuntu and docker is needed, along 
 
 Network Requirements
 
-To set up the network as a docker container, simply run the network shell script as root user using "bash PATH/TO/FILE/network.sh down" to clear the setup, and "bash pyhyperhealth/network.sh up_1" to setup the main network. To restart the network, use the command "bash PATH/TO/FILE/network.sh restart_1" as root. The peer-addition branch of the project requires specific machines and IP addresses, and it will not succeed without them. These can be edited if the user desires to use different IP addresses, or the multiple nodes branch can be used for local testing. The shell script is slightly different in some branches, make sure to look at the network.sh to determine which argument is needed.
+To set up the network as a docker container, simply run the network shell script as root user using "bash PATH/TO/FILE/network.sh down" to clear the setup, and "bash pyhyperhealth/network.sh up_1" to setup the main network. To restart the network, use the command "bash PATH/TO/FILE/network.sh restart_1" as root. The peer-addition branch of the project requires specific machines and IP addresses, and it will not succeed without them. These can be edited if the user desires to use different IP addresses, or the multiple nodes branch can be used for local testing. The shell script is slightly different in some branches, make sure to look at the network.sh to determine which argument is needed. To start or restart the second peer, replace the "1" with "2" in the same commands. For the third and later peers, use "3_plus" instead of "1" or "2".
 
 Python Exectuion
 

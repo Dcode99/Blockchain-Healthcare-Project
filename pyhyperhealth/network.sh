@@ -17,6 +17,7 @@ function up_1(){
 	    -v blockstore:/tmp/block_store \
 	    -e KEY='node1' \
 	    hyperledger/iroha:latest
+	    
 }
 
 function up_2(){
@@ -37,6 +38,7 @@ function up_2(){
 	    -v blockstore:/tmp/block_store \
 	    -e KEY='node2' \
 	    hyperledger/iroha:latest
+	    
 }
 
 function up_new(){
@@ -58,6 +60,7 @@ function up_new(){
 	    -v blockstore:/tmp/block_store \
 	    -e KEY='keypair' \
 	    hyperledger/iroha:latest
+	    
 }
 
 function up_post(){
@@ -69,6 +72,7 @@ function up_post(){
 	    --net host \
 	    -d postgres:9.5 \
 	    -c 'max_prepared_transactions=100'
+	    
 }
 
 function down(){
@@ -78,6 +82,7 @@ function down(){
     docker network prune
     docker volume prune
     docker image prune
+    
 }
 
 function restart_1(){

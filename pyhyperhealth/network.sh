@@ -41,7 +41,7 @@ function up_2(){
 	    
 }
 
-function up_new(){
+function up_3_plus(){
 
     read -p "Enter folder name of keys: " keypair
     service docker start
@@ -93,6 +93,11 @@ function restart_1(){
 function restart_2(){
     down
     up_2
+}
+
+function restart_3_plus(){
+   down
+   up_3_plus  
 }
 
 "$@"

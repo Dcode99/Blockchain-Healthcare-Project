@@ -4,6 +4,7 @@ setup(
     name='pyhyperhealth',
     version='0.8',
     packages=['pyhyperhealth'],
+    package_data={'pyhyperhealth': ['network.sh', 'Network_Files/*']},
     url='https://github.com/Dcode99/Blockchain-Healthcare-Project/',
     license='Apache 2.0',
     author='Dillon Tate',

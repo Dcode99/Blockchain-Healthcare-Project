@@ -1,0 +1,4 @@
+include network.sh
+recursive-include Network-Files/node1 *.pub *.priv *.config *.block
+recursive-include Network-Files/node2 *.pub *.priv *.config *.block
+recursive-include Network-Files/node3plus *.pub *.priv *.config *.block

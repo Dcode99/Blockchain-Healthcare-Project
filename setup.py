@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pyhyperhealth',
-    version='0.8',
+    version='0.9',
     packages=['pyhyperhealth'],
     package_data={'pyhyperhealth': ['network.sh', 'Network_Files/*']},
     url='https://github.com/Dcode99/Blockchain-Healthcare-Project/',

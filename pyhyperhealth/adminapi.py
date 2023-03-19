@@ -13,7 +13,7 @@ import re
 import binascii
 from iroha import IrohaCrypto
 from iroha import Iroha, IrohaGrpc
-from iroha.primitive_pb2
+import iroha.primitive_pb2
 from flask import Flask, request
 
 # The following line is actually about the permissions

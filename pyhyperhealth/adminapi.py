@@ -162,7 +162,7 @@ def append_role(acc_id, acc_domain, role):
     return result
 
 
-@app.route('/addehr/<acc_id>/<acc_domain>/<detail>/<ehr_reference>')
+@app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>')
 @trace
 def add_ehr(acc_id, domain, detail, ehr_reference):
     """

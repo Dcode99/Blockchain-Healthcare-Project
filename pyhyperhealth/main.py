@@ -13,7 +13,6 @@ import binascii
 from iroha import IrohaCrypto
 from iroha import Iroha, IrohaGrpc
 from iroha import primitive_pb2
-from flask import Flask, request
 
 # The following line is actually about the permissions
 # you might be using for the transaction.
@@ -21,8 +20,6 @@ from flask import Flask, request
 # https://iroha.readthedocs.io/en/main/develop/api/permissions.html
 from iroha.primitive_pb2 import can_set_my_account_detail
 import sys
-
-app = Flask(__name__)
 
 if sys.version_info[0] < 3:
     raise Exception('Python 3 or a more recent version is required.')
@@ -71,7 +68,6 @@ def send_transaction_and_print_status(transaction):
 
         
 ### NEW COMMANDS ###
-@app.route('/getdetails/<acc_id>/<domain>')
 @trace
 def get_account_details(acc_id, domain):
     """
@@ -86,7 +82,6 @@ def get_account_details(acc_id, domain):
     return data
 
 
-@app.route('/newdomain/<domain>')
 @trace
 def create_specific_domain(domain):
     """
@@ -102,8 +97,6 @@ def create_specific_domain(domain):
     send_transaction_and_print_status(tx)
     return tx
 
-
-@app.route('/newasset/<domain>/<asset>')
 @trace
 def create_specific_asset(domain, asset):
     """
@@ -121,7 +114,6 @@ def create_specific_asset(domain, asset):
 
 
 # This account is created with the new admin under the healthcare domain
-@app.route('/createaccount/<username>/<acc_domain>')
 @trace
 def create_account(username, acc_domain):
     """
@@ -141,7 +133,6 @@ def create_account(username, acc_domain):
     return temp_private_key, temp_public_key, tx
 
                         
-@app.route('/appendrole/<acc_id>/<role>')
 @trace
 def append_role(acc_id, role):
     """
@@ -155,7 +146,6 @@ def append_role(acc_id, role):
     return tx
 
 
-@app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>')
 @trace
 def add_ehr(acc_id, domain, detail, ehr_reference):
     """
@@ -169,7 +159,6 @@ def add_ehr(acc_id, domain, detail, ehr_reference):
     return tx
 
 
-@app.route('/addpeer/<peerIP>/<peerkey>')
 @trace
 def add_peer(peerIP, peerkey):
     """
@@ -185,7 +174,6 @@ def add_peer(peerIP, peerkey):
     return tx
 
 
-@app.route('/cansetmydetails/<acc_id>/<myacc_id>')
 @trace
 def cansetmydetails(acc_id, myacc_id):
     """

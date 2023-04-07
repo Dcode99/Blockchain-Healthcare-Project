@@ -128,9 +128,9 @@ def create_specific_asset(domain, asset, user, userdomain, apikey):
 
 
 # This account is created with the new admin under the healthcare domain
-@app.route('/createaccount/<newusername>/<acc_domain>/<username>/<acc_domain>/<apikey>')
+@app.route('/createaccount/<newusername>/<acc_domain>/<user>/<userdomain>/<apikey>')
 @trace
-def create_account(username, acc_domain, user, userdomain, apikey):
+def create_account(newusername, acc_domain, user, userdomain, apikey):
     """
     Create an account in the form of 'username@domain'
     """
@@ -150,7 +150,7 @@ def create_account(username, acc_domain, user, userdomain, apikey):
     return  'Private Key: {} \nPublic Key: {} \nSuccess: {}'.format(temp_private_key, temp_public_key, result)
 
                         
-@app.route('/appendrole/<acc_id>/<role>/<username>/<acc_domain>/<apikey>')
+@app.route('/appendrole/<acc_id>/<role>/<user>/<acc_domain>/<user>/<userdomain>/<apikey>')
 @trace
 def append_role(acc_id, role, user, userdomain, apikey):
     """
@@ -166,7 +166,7 @@ def append_role(acc_id, role, user, userdomain, apikey):
     return result
 
 
-@app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>/<username>/<acc_domain>/<apikey>')
+@app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>/<user>/<userdomain>/<apikey>')
 @trace
 def add_ehr(acc_id, domain, detail, ehr_reference, user, userdomain, apikey):
     """
@@ -182,7 +182,7 @@ def add_ehr(acc_id, domain, detail, ehr_reference, user, userdomain, apikey):
     return result
 
 
-@app.route('/addpeer/<peerIP>/<peerport>/<peerkey>/<username>/<acc_domain>/<apikey>')
+@app.route('/addpeer/<peerIP>/<peerport>/<peerkey>/<user>/<userdomain>/<apikey>')
 @trace
 def add_peer(peerIP, peerport, peerkey, user, userdomain, apikey):
     """
@@ -200,7 +200,7 @@ def add_peer(peerIP, peerport, peerkey, user, userdomain, apikey):
     return result
 
 
-@app.route('/cansetmydetails/<acc_id>/<myacc_id>/<username>/<acc_domain>/<apikey>')
+@app.route('/cansetmydetails/<acc_id>/<myacc_id>/<user>/<acc_domain>/<apikey>')
 @trace
 def cansetmydetails(acc_id, myacc_id, user, userdomain, apikey):
     """

@@ -152,7 +152,7 @@ def create_account(newusername, acc_domain, user, userdomain, apikey):
                         
 @app.route('/appendrole/<acc_id>/<acc_domain>/<role>/<user>/<userdomain>/<apikey>')
 @trace
-def append_role(acc_id, role, acc_user, acc_domain, user, userdomain, apikey):
+def append_role(acc_id, acc_domain, role, user, userdomain, apikey):
     """
     Create an account in the form of 'username@domain'
     """

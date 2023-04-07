@@ -70,6 +70,7 @@
                                 "can_create_asset",
                                 "can_receive",
                                 "can_transfer"
+                                "can_get_all_acc_detail",
                              ]
                           }
                        },

@@ -150,14 +150,15 @@ def create_account(newusername, acc_domain, user, userdomain, apikey):
     return  'Private Key: {} \nPublic Key: {} \nSuccess: {}'.format(temp_private_key, temp_public_key, result)
 
                         
-@app.route('/appendrole/<acc_id>/<role>/<user>/<acc_domain>/<user>/<userdomain>/<apikey>')
+@app.route('/appendrole/<acc_id>/<acc_domain>/<role>/<user>/<userdomain>/<apikey>')
 @trace
-def append_role(acc_id, role, user, userdomain, apikey):
+def append_role(acc_id, role, acc_user, acc_domain, user, userdomain, apikey):
     """
     Create an account in the form of 'username@domain'
     """
     ACCOUNT_ID = user + "@" + userdomain
     iroha = Iroha(ACCOUNT_ID)
+    acc_id = acc_id + "@" + acc_domain
     tx = iroha.transaction([
         iroha.command('AppendRole', account_id=acc_id, role_name=role)
     ])

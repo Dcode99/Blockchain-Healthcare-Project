@@ -175,8 +175,9 @@ def add_ehr(acc_id, domain, detail, ehr_reference, user, userdomain, apikey):
     """
     ACCOUNT_ID = user + "@" + userdomain
     iroha = Iroha(ACCOUNT_ID)
+    acc_id = acc_id + "@" + domain
     tx = iroha.transaction([
-        iroha.command('SetAccountDetail', account_id=acc_id + '@' + domain, key=detail, value=ehr_reference)
+        iroha.command('SetAccountDetail', account_id=acc_id, key=detail, value=ehr_reference)
     ])
     IrohaCrypto.sign_transaction(tx, apikey)
     result = send_transaction_and_print_status(tx)

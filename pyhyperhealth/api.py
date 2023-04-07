@@ -71,12 +71,14 @@ def send_transaction_and_print_status(transaction):
 # user is the account ID and the domain of the user submitting the request
 # apikey is the api key of the user submitting the request
 ### NEW COMMANDS ###
-@app.route('/getdetails/<acc_id>/<domain>/<apikey>')
+@app.route('/getdetails/<acc_id>/<domain>/<username>/<acc_domain>/<apikey>')
 @trace
 def get_account_details(acc_id, domain, apikey):
     """
     Get all the kv-storage entries for username@domain
     """
+    ACCOUNT_ID = user + "@" + userdomain
+    iroha = Iroha(ACCOUNT_ID)
     query = iroha.query('GetAccountDetail', account_id=acc_id+'@'+domain)
     IrohaCrypto.sign_query(query, apikey)
 
@@ -87,12 +89,14 @@ def get_account_details(acc_id, domain, apikey):
     return s
 
 
-@app.route('/newdomain/<domain>/<apikey>')
+@app.route('/newdomain/<domain>/<user>/<userdomain>/<apikey>')
 @trace
 def create_specific_domain(domain, apikey):
     """
     Create domain and asset with precision 2 from given information
     """
+    ACCOUNT_ID = user + "@" + userdomain
+    iroha = Iroha(ACCOUNT_ID)
     command = [
         iroha.command('CreateDomain', domain_id=domain, default_role='user')
     ]
@@ -104,12 +108,14 @@ def create_specific_domain(domain, apikey):
     return result
 
 
-@app.route('/newasset/<domain>/<asset>/<apikey>')
+@app.route('/newasset/<domain>/<asset>/<user>/<userdomain>/<apikey>')
 @trace
 def create_specific_asset(domain, asset, apikey):
     """
     Create domain and asset with precision 2 from given information
     """
+    ACCOUNT_ID = user + "@" + userdomain
+    iroha = Iroha(ACCOUNT_ID)
     command = [
         iroha.command('CreateAsset', asset_name=asset,
                       domain_id=domain, precision=2)
@@ -122,12 +128,14 @@ def create_specific_asset(domain, asset, apikey):
 
 
 # This account is created with the new admin under the healthcare domain
-@app.route('/createaccount/<username>/<acc_domain>/<apikey>')
+@app.route('/createaccount/<username>/<acc_domain>/<username>/<acc_domain>/<apikey>')
 @trace
 def create_account(username, acc_domain, apikey):
     """
     Create an account in the form of 'username@domain'
     """
+    ACCOUNT_ID = user + "@" + userdomain
+    iroha = Iroha(ACCOUNT_ID)
     # Creating the user Keys for this account
     temp_private_key = IrohaCrypto.private_key()
     temp_public_key = IrohaCrypto.derive_public_key(temp_private_key)
@@ -142,12 +150,14 @@ def create_account(username, acc_domain, apikey):
     return  'Private Key: {} \nPublic Key: {} \nSuccess: {}'.format(temp_private_key, temp_public_key, result)
 
                         
-@app.route('/appendrole/<acc_id>/<role>/<apikey>')
+@app.route('/appendrole/<acc_id>/<role>/<username>/<acc_domain>/<apikey>')
 @trace
 def append_role(acc_id, role, apikey):
     """
     Create an account in the form of 'username@domain'
     """
+    ACCOUNT_ID = user + "@" + userdomain
+    iroha = Iroha(ACCOUNT_ID)
     tx = iroha.transaction([
         iroha.command('AppendRole', account_id=acc_id, role_name=role)
     ])
@@ -156,12 +166,14 @@ def append_role(acc_id, role, apikey):
     return result
 
 
-@app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>/<apikey>')
+@app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>/<username>/<acc_domain>/<apikey>')
 @trace
 def add_ehr(acc_id, domain, detail, ehr_reference, apikey):
     """
     Add the EHR reference number as an account detail (setting account detail)
     """
+    ACCOUNT_ID = user + "@" + userdomain
+    iroha = Iroha(ACCOUNT_ID)
     tx = iroha.transaction([
         iroha.command('SetAccountDetail', account_id=acc_id + '@' + domain, key=detail, value=ehr_reference)
     ])
@@ -170,12 +182,14 @@ def add_ehr(acc_id, domain, detail, ehr_reference, apikey):
     return result
 
 
-@app.route('/addpeer/<peerIP>/<peerport>/<peerkey>/<apikey>')
+@app.route('/addpeer/<peerIP>/<peerport>/<peerkey>/<username>/<acc_domain>/<apikey>')
 @trace
 def add_peer(peerIP, peerport, peerkey,apikey):
     """
     Add a peer to the network given an IP address
     """
+    ACCOUNT_ID = user + "@" + userdomain
+    iroha = Iroha(ACCOUNT_ID)
     peer0 = primitive_pb2.Peer()
     peer0.address = peerIP + ":" + peerport
     peer0.peer_key = peerkey
@@ -186,12 +200,14 @@ def add_peer(peerIP, peerport, peerkey,apikey):
     return result
 
 
-@app.route('/cansetmydetails/<acc_id>/<myacc_id>/<apikey>')
+@app.route('/cansetmydetails/<acc_id>/<myacc_id>/<username>/<acc_domain>/<apikey>')
 @trace
 def cansetmydetails(acc_id, myacc_id, apikey):
     """
     Give an account permission to set and get the user's account details
     """
+    ACCOUNT_ID = user + "@" + userdomain
+    iroha = Iroha(ACCOUNT_ID)
     tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_set_my_account_detail)], creator_account=myacc_id)
     IrohaCrypto.sign_transaction(tx1, apikey)
     result1 = send_transaction_and_print_status(tx1)

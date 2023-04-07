@@ -1,5 +1,5 @@
 # api.py
-requires the user's API key to be included in each command
+requires the username, domain, and API key to be included in each command
 
 # adminapi.py
 does not ask for a key, it uses an example admin key. This is not going to be available in any real environment, but allows quick testing in development.

@@ -201,15 +201,16 @@ def add_peer(peerIP, peerport, peerkey, user, userdomain, apikey):
     return result
 
 
-@app.route('/cansetmydetails/<acc_id>/<myacc_id>/<user>/<acc_domain>/<apikey>')
+@app.route('/cansetmydetails/<acc_id>/<acc_domain>/<user>/<userdomain>/<apikey>')
 @trace
 def cansetmydetails(acc_id, myacc_id, user, userdomain, apikey):
     """
     Give an account permission to set and get the user's account details
     """
+    acc_id = acc_id + "@" + acc_domain
     ACCOUNT_ID = user + "@" + userdomain
     iroha = Iroha(ACCOUNT_ID)
-    tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_set_my_account_detail)], creator_account=myacc_id)
+    tx1 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_set_my_account_detail)], creator_account=ACCOUNT_ID)
     IrohaCrypto.sign_transaction(tx1, apikey)
     result1 = send_transaction_and_print_status(tx1)
     tx2 = iroha.transaction([iroha.command('GrantPermission', account_id=acc_id, permission=primitive_pb2.can_get_my_account_detail)], creator_account=myacc_id)

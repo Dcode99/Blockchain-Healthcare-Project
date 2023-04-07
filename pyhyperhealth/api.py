@@ -71,9 +71,9 @@ def send_transaction_and_print_status(transaction):
 # user is the account ID and the domain of the user submitting the request
 # apikey is the api key of the user submitting the request
 ### NEW COMMANDS ###
-@app.route('/getdetails/<acc_id>/<domain>/<username>/<acc_domain>/<apikey>')
+@app.route('/getdetails/<acc_id>/<domain>/<user>/<userdomain>/<apikey>')
 @trace
-def get_account_details(acc_id, domain, apikey):
+def get_account_details(acc_id, domain, user, userdomain, apikey):
     """
     Get all the kv-storage entries for username@domain
     """
@@ -91,7 +91,7 @@ def get_account_details(acc_id, domain, apikey):
 
 @app.route('/newdomain/<domain>/<user>/<userdomain>/<apikey>')
 @trace
-def create_specific_domain(domain, apikey):
+def create_specific_domain(domain, user, userdomain, apikey):
     """
     Create domain and asset with precision 2 from given information
     """
@@ -110,7 +110,7 @@ def create_specific_domain(domain, apikey):
 
 @app.route('/newasset/<domain>/<asset>/<user>/<userdomain>/<apikey>')
 @trace
-def create_specific_asset(domain, asset, apikey):
+def create_specific_asset(domain, asset, user, userdomain, apikey):
     """
     Create domain and asset with precision 2 from given information
     """
@@ -130,7 +130,7 @@ def create_specific_asset(domain, asset, apikey):
 # This account is created with the new admin under the healthcare domain
 @app.route('/createaccount/<username>/<acc_domain>/<username>/<acc_domain>/<apikey>')
 @trace
-def create_account(username, acc_domain, apikey):
+def create_account(username, acc_domain, user, userdomain, apikey):
     """
     Create an account in the form of 'username@domain'
     """
@@ -152,7 +152,7 @@ def create_account(username, acc_domain, apikey):
                         
 @app.route('/appendrole/<acc_id>/<role>/<username>/<acc_domain>/<apikey>')
 @trace
-def append_role(acc_id, role, apikey):
+def append_role(acc_id, role, user, userdomain, apikey):
     """
     Create an account in the form of 'username@domain'
     """
@@ -168,7 +168,7 @@ def append_role(acc_id, role, apikey):
 
 @app.route('/addehr/<acc_id>/<domain>/<detail>/<ehr_reference>/<username>/<acc_domain>/<apikey>')
 @trace
-def add_ehr(acc_id, domain, detail, ehr_reference, apikey):
+def add_ehr(acc_id, domain, detail, ehr_reference, user, userdomain, apikey):
     """
     Add the EHR reference number as an account detail (setting account detail)
     """
@@ -184,7 +184,7 @@ def add_ehr(acc_id, domain, detail, ehr_reference, apikey):
 
 @app.route('/addpeer/<peerIP>/<peerport>/<peerkey>/<username>/<acc_domain>/<apikey>')
 @trace
-def add_peer(peerIP, peerport, peerkey,apikey):
+def add_peer(peerIP, peerport, peerkey, user, userdomain, apikey):
     """
     Add a peer to the network given an IP address
     """
@@ -202,7 +202,7 @@ def add_peer(peerIP, peerport, peerkey,apikey):
 
 @app.route('/cansetmydetails/<acc_id>/<myacc_id>/<username>/<acc_domain>/<apikey>')
 @trace
-def cansetmydetails(acc_id, myacc_id, apikey):
+def cansetmydetails(acc_id, myacc_id, user, userdomain, apikey):
     """
     Give an account permission to set and get the user's account details
     """

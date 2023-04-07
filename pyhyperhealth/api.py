@@ -128,7 +128,7 @@ def create_specific_asset(domain, asset, user, userdomain, apikey):
 
 
 # This account is created with the new admin under the healthcare domain
-@app.route('/createaccount/<username>/<acc_domain>/<username>/<acc_domain>/<apikey>')
+@app.route('/createaccount/<newusername>/<acc_domain>/<username>/<acc_domain>/<apikey>')
 @trace
 def create_account(username, acc_domain, user, userdomain, apikey):
     """
@@ -141,7 +141,7 @@ def create_account(username, acc_domain, user, userdomain, apikey):
     temp_public_key = IrohaCrypto.derive_public_key(temp_private_key)
 
     tx = iroha.transaction([
-        iroha.command('CreateAccount', account_name=username, domain_id=acc_domain,
+        iroha.command('CreateAccount', account_name=newusername, domain_id=acc_domain,
                       public_key=temp_public_key)
     ])
     IrohaCrypto.sign_transaction(tx, apikey)
